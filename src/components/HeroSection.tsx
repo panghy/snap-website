@@ -4,6 +4,7 @@ import './HeroSection.css';
 const HeroSection: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | undefined>(undefined);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -13,12 +14,26 @@ const HeroSection: React.FC = () => {
     if (!ctx) return;
 
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const parent = canvas.parentElement as HTMLElement | null;
+      const width = parent?.clientWidth ?? window.innerWidth;
+      const height = parent?.clientHeight ?? window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
     };
 
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    const updateLayout = () => {
+      resizeCanvas();
+      const header = document.querySelector('.header') as HTMLElement | null;
+      const heroContent = contentRef.current;
+      if (heroContent) {
+        const headerHeight = header?.offsetHeight ?? 0;
+        heroContent.style.paddingTop = `${headerHeight + 32}px`;
+        heroContent.style.paddingBottom = '80px';
+      }
+    };
+
+    updateLayout();
+    window.addEventListener('resize', updateLayout);
 
     class Node {
       x: number;
@@ -260,7 +275,7 @@ const HeroSection: React.FC = () => {
     animate();
 
     return () => {
-      window.removeEventListener('resize', resizeCanvas);
+      window.removeEventListener('resize', updateLayout);
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
@@ -270,7 +285,7 @@ const HeroSection: React.FC = () => {
   return (
     <section className="hero-section">
       <canvas ref={canvasRef} className="hero-canvas" />
-      <div className="hero-content">
+      <div className="hero-content" ref={contentRef}>
         <h1 className="hero-title">
           <span className="hero-title-line">Composable Building Blocks</span>
           <span className="hero-title-line gradient">for FoundationDB</span>
