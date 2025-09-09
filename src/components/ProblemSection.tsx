@@ -15,9 +15,10 @@ const ProblemSection: React.FC = () => {
   const animationRef = useRef<HTMLDivElement>(null);
   const [animationStep, setAnimationStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [backgroundError, setBackgroundError] = useState(false);
-  const [subtitle, setSubtitle] = useState('Customer clicks "Buy Now" button...');
+  const [subtitle, setSubtitle] = useState('Customer clicks "Buy Now" → Frontend sends order request...');
   const [prevSubtitle, setPrevSubtitle] = useState('');
   const [subtitleKey, setSubtitleKey] = useState(0);
 
@@ -45,6 +46,8 @@ const ProblemSection: React.FC = () => {
       (entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting && entry.intersectionRatio >= 0.95 && !hasStarted) {
+            // Start with step 0 showing (HTTP active) but not playing yet
+            setAnimationStep(0);
             setIsPlaying(true);
             setHasStarted(true);
           }
@@ -59,26 +62,26 @@ const ProblemSection: React.FC = () => {
   }, [hasStarted]);
 
   useEffect(() => {
-    if (!isPlaying) return;
+    if (!isPlaying || isPaused) return;
     
     const interval = setInterval(() => {
       setAnimationStep((prev) => {
-        if (prev >= 11) {
+        if (prev >= 10) {
           setIsPlaying(false);
-          return 11; // Keep at final step instead of resetting to 0
+          setIsPaused(false);
+          return 10; // Keep at final step instead of resetting to 0
         }
         return prev + 1;
       });
     }, 2500);
     
     return () => clearInterval(interval);
-  }, [isPlaying]);
+  }, [isPlaying, isPaused]);
 
   useEffect(() => {
     // Update subtitle based on animation step
     const subtitles = [
-      'Customer clicks "Buy Now" button...',
-      'Frontend sends order request to API Gateway...',
+      'Customer clicks "Buy Now" → Frontend sends order request...',
       'API Gateway forwards to Order Service...',
       'Order Service creates order in database ✓',
       'Payment Service processes credit card...',
@@ -98,14 +101,30 @@ const ProblemSection: React.FC = () => {
     }
     
     // Set background error state
-    setBackgroundError(animationStep >= 8);
+    setBackgroundError(animationStep >= 7);
   }, [animationStep]);
 
   const handleReplay = () => {
     setAnimationStep(0);
     setIsPlaying(true);
+    setIsPaused(false);
     setHasStarted(true);
     setBackgroundError(false);
+  };
+
+  const handlePausePlay = () => {
+    if (animationStep >= 10) {
+      // If at the end, replay
+      handleReplay();
+    } else if (isPaused) {
+      // Resume
+      setIsPaused(false);
+      setIsPlaying(true);
+    } else {
+      // Pause
+      setIsPaused(true);
+      setIsPlaying(false);
+    }
   };
 
   const problems = [
@@ -173,42 +192,41 @@ const ProblemSection: React.FC = () => {
   ];
 
   const getConnectionStatus = (connIndex: number): 'pending' | 'success' | 'failed' | 'active' => {
-    if (animationStep === 0) return 'pending';
-    // Customer clicks buy
-    if (animationStep === 1 && connIndex === 0) return 'active';
-    // API Gateway to Order Service
-    if (animationStep === 2 && connIndex === 1) return 'active';
-    // Create order in DB
-    if (animationStep === 3 && connIndex === 2) return 'active';
-    // Process payment
-    if (animationStep === 4 && connIndex === 3) return 'active';
-    // Payment success, update DB
-    if (animationStep === 5 && connIndex === 4) return 'active';
-    // Try to update inventory
-    if (animationStep === 6 && connIndex === 5) return 'active';
-    // Inventory service fails!
-    if (animationStep === 7 && connIndex === 5) return 'failed';
-    if (animationStep === 7 && connIndex === 6) return 'failed';
-    // Order still marked as confirmed despite inventory failure
-    if (animationStep === 8 && connIndex === 2) return 'success';
-    // Try to publish to MQ
-    if (animationStep === 9 && connIndex === 7) return 'active';
-    // MQ is down!
-    if (animationStep === 10 && connIndex === 7) return 'failed';
-    // Can't reach email/SMS services
-    if (animationStep === 11) {
+    // Step 0: Customer clicks buy + Frontend sends request (HTTP active)
+    if (animationStep === 0 && connIndex === 0) return 'active';
+    // Step 1: API Gateway to Order Service
+    if (animationStep === 1 && connIndex === 1) return 'active';
+    // Step 2: Create order in DB
+    if (animationStep === 2 && connIndex === 2) return 'active';
+    // Step 3: Process payment
+    if (animationStep === 3 && connIndex === 3) return 'active';
+    // Step 4: Payment success, update DB
+    if (animationStep === 4 && connIndex === 4) return 'active';
+    // Step 5: Try to update inventory
+    if (animationStep === 5 && connIndex === 5) return 'active';
+    // Step 6: Inventory service fails!
+    if (animationStep === 6 && connIndex === 5) return 'failed';
+    if (animationStep === 6 && connIndex === 6) return 'failed';
+    // Step 7: Order still marked as confirmed despite inventory failure
+    if (animationStep === 7 && connIndex === 2) return 'success';
+    // Step 8: Try to publish to MQ
+    if (animationStep === 8 && connIndex === 7) return 'active';
+    // Step 9: MQ is down!
+    if (animationStep === 9 && connIndex === 7) return 'failed';
+    // Step 10: Can't reach email/SMS services
+    if (animationStep === 10) {
       if (connIndex === 8 || connIndex === 9) return 'failed';
     }
     
     // Persistent states
-    if (animationStep > 1 && connIndex === 0) return 'success';
-    if (animationStep > 2 && connIndex === 1) return 'success';
-    if (animationStep > 3 && connIndex === 2) return 'success';
-    if (animationStep > 4 && connIndex === 3) return 'success';
-    if (animationStep > 5 && connIndex === 4) return 'success';
-    if (animationStep > 7 && connIndex === 5) return 'failed';
-    if (animationStep > 7 && connIndex === 6) return 'failed';
-    if (animationStep > 10) {
+    if (animationStep > 0 && connIndex === 0) return 'success';
+    if (animationStep > 1 && connIndex === 1) return 'success';
+    if (animationStep > 2 && connIndex === 2) return 'success';
+    if (animationStep > 3 && connIndex === 3) return 'success';
+    if (animationStep > 4 && connIndex === 4) return 'success';
+    if (animationStep > 6 && connIndex === 5) return 'failed';
+    if (animationStep > 6 && connIndex === 6) return 'failed';
+    if (animationStep > 9) {
       if (connIndex === 7) return 'failed';
       if (connIndex === 8 || connIndex === 9) return 'failed';
     }
@@ -411,8 +429,13 @@ const ProblemSection: React.FC = () => {
           
           {/* Controls bar with subtitle and button */}
           <div style={{ position: 'absolute', bottom: '15px', left: '15px', right: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <button className="replay-button" onClick={handleReplay} aria-label={isPlaying ? 'Pause' : 'Replay'} style={{ position: 'static' }}>
-              {isPlaying ? '⏸' : '↻'}
+            <button 
+              className="replay-button" 
+              onClick={animationStep >= 10 ? handleReplay : handlePausePlay} 
+              aria-label={animationStep >= 10 ? 'Replay' : (isPaused ? 'Play' : 'Pause')} 
+              style={{ position: 'static' }}
+            >
+              {animationStep >= 10 ? '↻' : (isPaused ? '▶' : '⏸')}
             </button>
             <div style={{ flex: 1, background: 'rgba(40,40,40,0.4)', borderRadius: '15px', padding: '8px 15px', overflow: 'hidden', position: 'relative', height: '30px' }}>
               {/* Previous subtitle fading out and up */}
