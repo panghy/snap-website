@@ -12,13 +12,41 @@ const HeroSection: React.FC = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Use visualViewport for mobile Safari to prevent resize on scroll
+    const getViewportDimensions = () => {
+      if (window.visualViewport) {
+        return {
+          width: window.visualViewport.width,
+          height: window.visualViewport.height
+        };
+      }
+      return {
+        width: window.innerWidth,
+        height: window.innerHeight
+      };
+    };
+
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const { width, height } = getViewportDimensions();
+      // Only resize if the change is significant (not just address bar)
+      const widthDiff = Math.abs(canvas.width - width);
+      const heightDiff = Math.abs(canvas.height - height);
+      
+      // On mobile, ignore small height changes (address bar)
+      if (widthDiff > 10 || (heightDiff > 100 || canvas.width === 0)) {
+        canvas.width = width;
+        canvas.height = height;
+      }
     };
 
     resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    
+    // Use visualViewport resize event if available (better for mobile)
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', resizeCanvas);
+    } else {
+      window.addEventListener('resize', resizeCanvas);
+    }
 
     class Node {
       x: number;
@@ -260,7 +288,11 @@ const HeroSection: React.FC = () => {
     animate();
 
     return () => {
-      window.removeEventListener('resize', resizeCanvas);
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', resizeCanvas);
+      } else {
+        window.removeEventListener('resize', resizeCanvas);
+      }
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }

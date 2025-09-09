@@ -26,7 +26,7 @@ const Footer: React.FC = () => {
           <div className="footer-section">
             <h4>Community</h4>
             <ul className="footer-links">
-              <li><a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+              <li><a href="https://github.com/panghy/snap-website" target="_blank" rel="noopener noreferrer">GitHub</a></li>
               <li><a href="https://discord.gg/acfgTbdErv" target="_blank" rel="noopener noreferrer">Discord</a></li>
             </ul>
           </div>
@@ -45,7 +45,7 @@ const Footer: React.FC = () => {
         <div className="footer-bottom">
           <div className="footer-legal">
             <p>FoundationDB is a registered trademark of Apple Inc.</p>
-            <p>Edit this page by filing a PR on <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
+            <p>Edit this page by filing a PR on <a href="https://github.com/panghy/snap-website" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
           </div>
           <div className="footer-copyright">
             <p>&copy; 2025 SNAPs Project. Built with FoundationDB.</p>

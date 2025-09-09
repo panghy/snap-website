@@ -2,6 +2,8 @@
   position: relative;
   width: 100vw;
   min-height: 100vh;
+  /* Use dynamic viewport height that accounts for mobile browsers */
+  min-height: 100dvh;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -16,6 +18,12 @@
   width: 100%;
   height: 100%;
   background: radial-gradient(ellipse at center, #0a0a0a 0%, #000000 100%);
+  /* Dim the animation by 50% for better readability */
+  opacity: 0.5;
+  /* Prevent canvas from resizing */
+  will-change: transform;
+  /* Keep canvas dimensions stable */
+  transform: translateZ(0);
 }
 
 .hero-content {

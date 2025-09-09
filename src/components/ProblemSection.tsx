@@ -68,14 +68,14 @@ const ProblemSection: React.FC = () => {
     
     const interval = setInterval(() => {
       setAnimationStep((prev) => {
-        if (prev >= 10) {
+        if (prev >= 14) {
           setIsPlaying(false);
           setIsPaused(false);
-          return 10; // Keep at final step instead of resetting to 0
+          return 14; // Keep at final step instead of resetting to 0
         }
         return prev + 1;
       });
-    }, 2500);
+    }, 2000); // Slightly faster to fit more steps
     
     return () => clearInterval(interval);
   }, [isPlaying, isPaused]);
@@ -88,12 +88,16 @@ const ProblemSection: React.FC = () => {
       'Order Service creates order in database ✓',
       'Payment Service processes credit card...',
       'Payment authorized successfully ✓',
-      'Trying to reserve inventory items...',
-      'Inventory Service TIMEOUT! Connection failed ✗',
-      'Order confirmed but items not reserved! ⚠️',
-      'Publishing order event to message queue...',
-      'Message Queue is DOWN! Connection refused ✗',
-      'Customer charged, no items, no notification! 💥'
+      'Parallel: Inventory + Message Queue operations...',
+      'Inventory Service TIMEOUT! MQ is slow, no response... ⏳',
+      'Order Service detects inventory failure! ⚠️',
+      'Attempting to compensate: Refund payment...',
+      'Refund API call hangs... No response! 😰',
+      'Meanwhile: MQ might have sent email... or not? 🤷',
+      'Customer waiting... System in unknown state! ⌛',
+      'Timeout! Can\'t tell customer to retry or call support! 🔥',
+      'Money taken? Email sent? Items reserved? WHO KNOWS?! 💥',
+      'Complete system failure - Manual intervention required! 🚨'
     ];
     const newSubtitle = subtitles[animationStep] || subtitles[0];
     if (newSubtitle !== subtitle) {
@@ -102,8 +106,8 @@ const ProblemSection: React.FC = () => {
       setSubtitleKey(prev => prev + 1);
     }
     
-    // Set background error state
-    setBackgroundError(animationStep >= 7);
+    // Set background error state (starts when inventory fails)
+    setBackgroundError(animationStep >= 6);
   }, [animationStep]);
 
   const handleReplay = () => {
@@ -115,7 +119,7 @@ const ProblemSection: React.FC = () => {
   };
 
   const handlePausePlay = () => {
-    if (animationStep >= 10) {
+    if (animationStep >= 14) {
       // If at the end, replay
       handleReplay();
     } else if (isPaused) {
@@ -132,10 +136,34 @@ const ProblemSection: React.FC = () => {
   const handleFullscreen = async () => {
     if (!visualizationRef.current) return;
     
-    if (!document.fullscreenElement) {
+    const elem = visualizationRef.current as any;
+    const doc = document as any;
+    
+    // Check if we're currently in fullscreen
+    const isCurrentlyFullscreen = doc.fullscreenElement || 
+                                   doc.webkitFullscreenElement || 
+                                   doc.mozFullScreenElement || 
+                                   doc.msFullscreenElement;
+    
+    if (!isCurrentlyFullscreen) {
       try {
-        // Request fullscreen
-        await visualizationRef.current.requestFullscreen();
+        // Try different fullscreen methods for browser compatibility
+        if (elem.requestFullscreen) {
+          await elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) {
+          // Safari/iOS
+          await elem.webkitRequestFullscreen();
+        } else if (elem.webkitEnterFullscreen) {
+          // iOS video element fallback
+          await elem.webkitEnterFullscreen();
+        } else if (elem.mozRequestFullScreen) {
+          // Firefox
+          await elem.mozRequestFullScreen();
+        } else if (elem.msRequestFullscreen) {
+          // IE/Edge
+          await elem.msRequestFullscreen();
+        }
+        
         setIsFullscreen(true);
         
         // Try to lock orientation to landscape on mobile
@@ -149,10 +177,28 @@ const ProblemSection: React.FC = () => {
         }
       } catch (err) {
         console.error('Error attempting to enable fullscreen:', err);
+        // If fullscreen fails, try a fallback modal approach
+        setIsFullscreen(true);
       }
     } else {
       // Exit fullscreen
-      document.exitFullscreen();
+      try {
+        if (doc.exitFullscreen) {
+          await doc.exitFullscreen();
+        } else if (doc.webkitExitFullscreen) {
+          // Safari
+          await doc.webkitExitFullscreen();
+        } else if (doc.mozCancelFullScreen) {
+          // Firefox
+          await doc.mozCancelFullScreen();
+        } else if (doc.msExitFullscreen) {
+          // IE/Edge
+          await doc.msExitFullscreen();
+        }
+      } catch (err) {
+        console.error('Error exiting fullscreen:', err);
+      }
+      
       setIsFullscreen(false);
       
       // Unlock orientation
@@ -169,11 +215,25 @@ const ProblemSection: React.FC = () => {
   // Listen for fullscreen changes
   useEffect(() => {
     const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
+      const doc = document as any;
+      const isFullscreen = !!(doc.fullscreenElement || 
+                               doc.webkitFullscreenElement || 
+                               doc.mozFullScreenElement || 
+                               doc.msFullscreenElement);
+      setIsFullscreen(isFullscreen);
     };
 
     document.addEventListener('fullscreenchange', handleFullscreenChange);
-    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+    
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+    };
   }, []);
 
   const problems = [
@@ -237,7 +297,10 @@ const ProblemSection: React.FC = () => {
     { from: 5, to: 3, protocol: 'SQL', status: 'pending', label: 'UPDATE stock' },
     { from: 2, to: 6, protocol: 'MQ', status: 'pending', label: 'Publish event' },
     { from: 6, to: 7, protocol: 'MQ', status: 'pending', label: 'Send email' },
-    { from: 6, to: 8, protocol: 'MQ', status: 'pending', label: 'Send SMS' }
+    { from: 6, to: 8, protocol: 'MQ', status: 'pending', label: 'Send SMS' },
+    // Compensation attempts
+    { from: 2, to: 4, protocol: 'gRPC', status: 'pending', label: 'Refund $99' },
+    { from: 1, to: 0, protocol: 'HTTP', status: 'pending', label: 'Response???' }
   ];
 
   const getConnectionStatus = (connIndex: number): 'pending' | 'success' | 'failed' | 'active' => {
@@ -251,34 +314,49 @@ const ProblemSection: React.FC = () => {
     if (animationStep === 3 && connIndex === 3) return 'active';
     // Step 4: Payment success, update DB
     if (animationStep === 4 && connIndex === 4) return 'active';
-    // Step 5: Try to update inventory
-    if (animationStep === 5 && connIndex === 5) return 'active';
-    // Step 6: Inventory service fails!
-    if (animationStep === 6 && connIndex === 5) return 'failed';
-    if (animationStep === 6 && connIndex === 6) return 'failed';
-    // Step 7: Order still marked as confirmed despite inventory failure
-    if (animationStep === 7 && connIndex === 2) return 'success';
-    // Step 8: Try to publish to MQ
-    if (animationStep === 8 && connIndex === 7) return 'active';
-    // Step 9: MQ is down!
-    if (animationStep === 9 && connIndex === 7) return 'failed';
-    // Step 10: Can't reach email/SMS services
+    // Step 5: Parallel operations - inventory and MQ
+    if (animationStep === 5) {
+      if (connIndex === 5) return 'active'; // Inventory
+      if (connIndex === 7) return 'active'; // MQ publish
+    }
+    // Step 6: Inventory fails, MQ is slow (uncertain)
+    if (animationStep === 6) {
+      if (connIndex === 5) return 'failed'; // Inventory timeout
+      if (connIndex === 6) return 'failed'; // Can't update stock
+      if (connIndex === 7) return 'active'; // MQ still "processing"
+      if (connIndex === 8 || connIndex === 9) return 'active'; // Email/SMS might be happening?
+    }
+    // Step 7: Order Service detects failure
+    if (animationStep === 7 && connIndex === 2) return 'failed';
+    // Step 8: Attempt compensation - refund
+    if (animationStep === 8 && connIndex === 10) return 'active';
+    // Step 9: Refund hangs!
+    if (animationStep === 9 && connIndex === 10) return 'active'; // Still hanging
+    // Step 10: MQ status unknown
     if (animationStep === 10) {
-      if (connIndex === 8 || connIndex === 9) return 'failed';
+      if (connIndex === 7) return 'active'; // Still unknown
+      if (connIndex === 8 || connIndex === 9) return 'active'; // Maybe sent?
+    }
+    // Step 11: Customer waiting
+    if (animationStep === 11 && connIndex === 11) return 'active';
+    // Step 12: Timeout
+    if (animationStep === 12 && connIndex === 11) return 'failed';
+    // Step 13+: Everything is broken
+    if (animationStep >= 13) {
+      if (connIndex === 10) return 'failed'; // Refund failed
+      if (connIndex === 11) return 'failed'; // Can't respond
+      if (connIndex === 7) return 'failed'; // MQ failed
+      if (connIndex === 8 || connIndex === 9) return 'failed'; // Email/SMS failed
     }
     
     // Persistent states
     if (animationStep > 0 && connIndex === 0) return 'success';
     if (animationStep > 1 && connIndex === 1) return 'success';
-    if (animationStep > 2 && connIndex === 2) return 'success';
+    if (animationStep > 2 && connIndex === 2) return animationStep >= 7 ? 'failed' : 'success';
     if (animationStep > 3 && connIndex === 3) return 'success';
     if (animationStep > 4 && connIndex === 4) return 'success';
     if (animationStep > 6 && connIndex === 5) return 'failed';
     if (animationStep > 6 && connIndex === 6) return 'failed';
-    if (animationStep > 9) {
-      if (connIndex === 7) return 'failed';
-      if (connIndex === 8 || connIndex === 9) return 'failed';
-    }
     
     return 'pending';
   };
@@ -479,15 +557,59 @@ const ProblemSection: React.FC = () => {
             
           </svg>
           
+          {/* Close button for fullscreen mode (mobile Safari fallback) */}
+          {isFullscreen && (
+            <button
+              onClick={() => {
+                // Force exit fullscreen state
+                setIsFullscreen(false);
+                
+                // Try to exit fullscreen through API as well
+                const doc = document as any;
+                if (doc.exitFullscreen) {
+                  doc.exitFullscreen().catch(() => {});
+                } else if (doc.webkitExitFullscreen) {
+                  doc.webkitExitFullscreen();
+                } else if (doc.mozCancelFullScreen) {
+                  doc.mozCancelFullScreen();
+                } else if (doc.msExitFullscreen) {
+                  doc.msExitFullscreen();
+                }
+              }}
+              style={{
+                position: 'absolute',
+                top: '15px',
+                right: '15px',
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                background: 'rgba(40,40,40,0.8)',
+                border: '1px solid rgba(255,255,255,0.2)',
+                color: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                zIndex: 1000,
+                fontSize: '24px',
+                padding: 0,
+                lineHeight: 1
+              }}
+              aria-label="Exit fullscreen"
+            >
+              ×
+            </button>
+          )}
+          
           {/* Controls bar with subtitle and buttons */}
           <div style={{ position: 'absolute', bottom: '15px', left: '15px', right: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
             <button 
               className="replay-button" 
-              onClick={animationStep >= 10 ? handleReplay : handlePausePlay} 
-              aria-label={animationStep >= 10 ? 'Replay' : (isPaused ? 'Play' : 'Pause')} 
+              onClick={animationStep >= 14 ? handleReplay : handlePausePlay} 
+              aria-label={animationStep >= 14 ? 'Replay' : (isPaused ? 'Play' : 'Pause')} 
               style={{ position: 'static', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             >
-              {animationStep >= 10 ? (
+              {animationStep >= 14 ? (
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
                 </svg>
@@ -515,13 +637,14 @@ const ProblemSection: React.FC = () => {
                 {subtitle}
               </div>
             </div>
-            <button 
-              className="fullscreen-button" 
-              onClick={handleFullscreen}
-              aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
-              style={{ 
-                position: 'static',
-                display: 'flex',
+            {!isFullscreen && (
+              <button 
+                className="fullscreen-button" 
+                onClick={handleFullscreen}
+                aria-label="Enter fullscreen"
+                style={{ 
+                  position: 'static',
+                  display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 background: 'rgba(40,40,40,0.6)',
@@ -549,6 +672,7 @@ const ProblemSection: React.FC = () => {
                 </svg>
               )}
             </button>
+            )}
           </div>
         </div>
 
