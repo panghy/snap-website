@@ -1,0 +1,373 @@
+.snap-section {
+  padding: 8rem 0;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(20, 10, 30, 0.3) 0%, rgba(10, 10, 10, 0.5) 100%);
+}
+
+.snap-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(240, 147, 251, 0.3), transparent);
+}
+
+.snap-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.snap-title {
+  text-align: center;
+  margin-bottom: 1rem;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
+}
+
+.snap-title.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.snap-title-main {
+  display: block;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 900;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #f093fb, #764ba2, #667eea);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.snap-subtitle {
+  display: block;
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 400;
+}
+
+.snap-demo {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 3rem;
+  margin: 4rem 0;
+  align-items: start;
+}
+
+.code-example {
+  background: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: all 0.8s ease;
+}
+
+.code-example.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.code-header {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.code-file {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  font-family: 'Monaco', 'Courier New', monospace;
+}
+
+.code-dots {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.code-dots span {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.code-dots span:nth-child(1) { background: #ff5f57; }
+.code-dots span:nth-child(2) { background: #ffbd2e; }
+.code-dots span:nth-child(3) { background: #28ca42; }
+
+.code-content {
+  padding: 1.5rem;
+  overflow-x: auto;
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.code-line {
+  display: block;
+  padding: 0.25rem 0.5rem;
+  margin: 0 -0.5rem;
+  transition: all 0.3s ease;
+  border-left: 3px solid transparent;
+}
+
+.code-line.highlight {
+  background: rgba(102, 126, 234, 0.1);
+  border-left-color: #667eea;
+}
+
+.comment {
+  color: #6a9955;
+  font-style: italic;
+}
+
+.keyword {
+  color: #c586c0;
+}
+
+.method {
+  color: #dcdcaa;
+}
+
+.param {
+  color: #9cdcfe;
+}
+
+.arrow {
+  color: #c586c0;
+}
+
+.type {
+  color: #4ec9b0;
+}
+
+.object {
+  color: #9cdcfe;
+}
+
+.code-footer {
+  background: rgba(102, 126, 234, 0.05);
+  padding: 1rem;
+  border-top: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.execution-status {
+  color: #4ec9b0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.transaction-flow {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.flow-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.flow-visualization {
+  position: relative;
+}
+
+.transaction-box {
+  background: linear-gradient(180deg, rgba(102, 126, 234, 0.05) 0%, rgba(240, 147, 251, 0.05) 100%);
+  border: 2px dashed rgba(102, 126, 234, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.transaction-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0.5rem 0;
+}
+
+.snap-operations {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+}
+
+.snap-op {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.snap-op.active {
+  background: rgba(102, 126, 234, 0.1);
+  border-color: #667eea;
+  transform: translateX(10px);
+}
+
+.op-icon {
+  font-size: 1.5rem;
+  filter: sepia(1) saturate(2) hue-rotate(230deg) brightness(0.9);
+}
+
+.op-name {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.principles-grid {
+  margin: 6rem 0;
+}
+
+.principles-grid h3 {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.spec-intro {
+  max-width: 800px;
+  margin: 0 auto 3rem;
+  text-align: center;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.principles-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.snap-principle {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s ease forwards;
+  transition: all 0.3s ease;
+}
+
+.snap-principle.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.snap-principle:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.principle-icon {
+  font-size: 2rem;
+  min-width: 50px;
+  text-align: center;
+  filter: sepia(1) saturate(2) hue-rotate(230deg) brightness(0.9);
+  opacity: 0.85;
+}
+
+.principle-content h4 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.principle-content p {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.5;
+}
+
+.principle-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.snap-principle:hover .principle-glow {
+  opacity: 1;
+}
+
+.snap-benefits {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  padding: 3rem;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(240, 147, 251, 0.05) 100%);
+  border-radius: 20px;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.benefit {
+  text-align: center;
+}
+
+.benefit-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  filter: sepia(1) saturate(2) hue-rotate(230deg) brightness(0.9);
+  opacity: 0.85;
+}
+
+.benefit h4 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.benefit p {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+@media (max-width: 968px) {
+  .snap-demo {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .principles-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .snap-benefits {
+    grid-template-columns: 1fr;
+    padding: 2rem;
+  }
+}
