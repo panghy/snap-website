@@ -28,7 +28,6 @@ const Footer: React.FC = () => {
             <ul className="footer-links">
               <li><a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a></li>
               <li><a href="https://discord.gg/acfgTbdErv" target="_blank" rel="noopener noreferrer">Discord</a></li>
-              <li><a href="#blog">Blog</a></li>
             </ul>
           </div>
           
