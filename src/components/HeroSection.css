@@ -1,7 +1,9 @@
 .hero-section {
   position: relative;
   width: 100vw;
+  /* Use dynamic viewport height so the hero fills the screen on mobile */
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   display: flex;
   align-items: center;

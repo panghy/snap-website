@@ -13,8 +13,10 @@ const HeroSection: React.FC = () => {
     if (!ctx) return;
 
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const width = window.innerWidth;
+      const height = window.visualViewport?.height ?? window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
     };
 
     resizeCanvas();
