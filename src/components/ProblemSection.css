@@ -172,6 +172,47 @@
   50% { opacity: 0.3; }
 }
 
+/* Fullscreen mode styles */
+.complexity-visualization.fullscreen-mode {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999 !important;
+  background: #0a0a0a !important;
+  margin: 0 !important;
+  padding: 20px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.complexity-visualization.fullscreen-mode .complexity-svg {
+  width: 100% !important;
+  height: calc(100vh - 100px) !important;
+  max-width: none !important;
+}
+
+/* Force landscape orientation hint on mobile */
+@media (max-width: 768px) and (orientation: portrait) {
+  .complexity-visualization.fullscreen-mode::before {
+    content: 'Rotate device for better experience';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 14px;
+    text-align: center;
+    pointer-events: none;
+    z-index: -1;
+  }
+}
+
 .problem-card h3 {
   font-size: 1.2rem;
   margin-bottom: 0.5rem;

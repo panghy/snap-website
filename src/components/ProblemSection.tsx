@@ -21,6 +21,8 @@ const ProblemSection: React.FC = () => {
   const [subtitle, setSubtitle] = useState('Customer clicks "Buy Now" → Frontend sends order request...');
   const [prevSubtitle, setPrevSubtitle] = useState('');
   const [subtitleKey, setSubtitleKey] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const visualizationRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const elements = document.querySelectorAll('.problem-card, .problem-title, .problem-intro');
@@ -126,6 +128,53 @@ const ProblemSection: React.FC = () => {
       setIsPlaying(false);
     }
   };
+
+  const handleFullscreen = async () => {
+    if (!visualizationRef.current) return;
+    
+    if (!document.fullscreenElement) {
+      try {
+        // Request fullscreen
+        await visualizationRef.current.requestFullscreen();
+        setIsFullscreen(true);
+        
+        // Try to lock orientation to landscape on mobile
+        if ('orientation' in screen && 'lock' in (screen.orientation as any)) {
+          try {
+            await (screen.orientation as any).lock('landscape');
+          } catch (e) {
+            // Orientation lock might not be supported or allowed
+            console.log('Could not lock orientation:', e);
+          }
+        }
+      } catch (err) {
+        console.error('Error attempting to enable fullscreen:', err);
+      }
+    } else {
+      // Exit fullscreen
+      document.exitFullscreen();
+      setIsFullscreen(false);
+      
+      // Unlock orientation
+      if ('orientation' in screen && 'unlock' in (screen.orientation as any)) {
+        try {
+          (screen.orientation as any).unlock();
+        } catch (e) {
+          console.log('Could not unlock orientation:', e);
+        }
+      }
+    }
+  };
+
+  // Listen for fullscreen changes
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
 
   const problems = [
     {
@@ -275,7 +324,10 @@ const ProblemSection: React.FC = () => {
           We've normalized failure and accepted inconsistency as the price of scale.
         </p>
 
-        <div ref={animationRef} className={`complexity-visualization ${backgroundError ? 'error-state' : ''}`}>
+        <div ref={(el) => {
+          animationRef.current = el;
+          visualizationRef.current = el;
+        }} className={`complexity-visualization ${backgroundError ? 'error-state' : ''} ${isFullscreen ? 'fullscreen-mode' : ''}`}>
           <svg className="complexity-svg" viewBox="0 0 900 350">
             <defs>
               <linearGradient id="errorGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -427,15 +479,29 @@ const ProblemSection: React.FC = () => {
             
           </svg>
           
-          {/* Controls bar with subtitle and button */}
+          {/* Controls bar with subtitle and buttons */}
           <div style={{ position: 'absolute', bottom: '15px', left: '15px', right: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
             <button 
               className="replay-button" 
               onClick={animationStep >= 10 ? handleReplay : handlePausePlay} 
               aria-label={animationStep >= 10 ? 'Replay' : (isPaused ? 'Play' : 'Pause')} 
-              style={{ position: 'static' }}
+              style={{ position: 'static', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             >
-              {animationStep >= 10 ? '↻' : (isPaused ? '▶' : '⏸')}
+              {animationStep >= 10 ? (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                </svg>
+              ) : (
+                isPaused ? (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                ) : (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                  </svg>
+                )
+              )}
             </button>
             <div style={{ flex: 1, background: 'rgba(40,40,40,0.4)', borderRadius: '15px', padding: '8px 15px', overflow: 'hidden', position: 'relative', height: '30px' }}>
               {/* Previous subtitle fading out and up */}
@@ -449,6 +515,40 @@ const ProblemSection: React.FC = () => {
                 {subtitle}
               </div>
             </div>
+            <button 
+              className="fullscreen-button" 
+              onClick={handleFullscreen}
+              aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+              style={{ 
+                position: 'static',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'rgba(40,40,40,0.6)',
+                border: '1px solid rgba(255,255,255,0.2)',
+                borderRadius: '8px',
+                padding: '8px',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                color: 'white'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(60,60,60,0.8)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(40,40,40,0.6)';
+              }}
+            >
+              {isFullscreen ? (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
+                </svg>
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                </svg>
+              )}
+            </button>
           </div>
         </div>
 
