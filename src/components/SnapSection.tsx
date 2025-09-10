@@ -56,7 +56,7 @@ const SnapSection: React.FC = () => {
     {
       icon: '🔗',
       title: 'Transaction Composability',
-      description: 'Combine multiple SNAPs in a single atomic transaction.',
+      description: 'Combine multiple SNAPs in a single atomic transaction. Implementations may choose to implement batch-and-swap operations to respect the 5s rule.',
       color: '#f093fb'
     },
     {

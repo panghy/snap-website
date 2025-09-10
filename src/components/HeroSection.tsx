@@ -326,16 +326,16 @@ const HeroSection: React.FC = () => {
         </div>
         <div className="hero-stats">
           <div className="stat">
-            <div className="stat-number">100%</div>
-            <div className="stat-label">Atomic Transactions</div>
+            <div className="stat-number">DRY</div>
+            <div className="stat-label">Mix and match SNAPs (or contribute one)</div>
           </div>
           <div className="stat">
-            <div className="stat-number">∞</div>
-            <div className="stat-label">Composability</div>
+            <div className="stat-number">Deploy Fearlessly</div>
+            <div className="stat-label">All-or-Nothing Transactions Across SNAPs</div>
           </div>
           <div className="stat">
-            <div className="stat-number">1</div>
-            <div className="stat-label">Transaction to Rule Them All</div>
+            <div className="stat-number">Language Agnostic</div>
+            <div className="stat-label">It's just a Specification!</div>
           </div>
         </div>
       </div>

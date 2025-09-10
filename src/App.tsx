@@ -11,9 +11,9 @@ function App() {
     <div className="app">
       <Header />
       <HeroSection />
+      <SnapSection />
       <ProblemSection />
       <SolutionSection />
-      <SnapSection />
       <Footer />
     </div>
   )
