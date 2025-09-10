@@ -327,11 +327,11 @@ const HeroSection: React.FC = () => {
         <div className="hero-stats">
           <div className="stat">
             <div className="stat-number">DRY</div>
-            <div className="stat-label">Mix and match SNAPs (or contribute one)</div>
+            <div className="stat-label">Mix and match SNAPs<br />(or contribute one)</div>
           </div>
           <div className="stat">
             <div className="stat-number">Deploy Fearlessly</div>
-            <div className="stat-label">All-or-Nothing Transactions Across SNAPs</div>
+            <div className="stat-label">All-or-Nothing Transactions<br />across SNAPs</div>
           </div>
           <div className="stat">
             <div className="stat-number">Language Agnostic</div>
