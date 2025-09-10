@@ -113,7 +113,7 @@ const SolutionSection: React.FC = () => {
           <h3>Who's Already Building on This Foundation</h3>
           <div className="foundation-showcase">
             <div className="foundation-visualization">
-              <svg className="foundation-svg" viewBox="0 0 350 250">
+              <svg className="foundation-svg" viewBox="0 0 450 320">
                 <defs>
                   <linearGradient id="foundationGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                     <stop offset="0%" stopColor="#667eea" stopOpacity="0.2" />
@@ -123,11 +123,11 @@ const SolutionSection: React.FC = () => {
                 </defs>
                 
                 {/* Foundation base */}
-                <rect x="50" y="160" width="250" height="60" fill="url(#foundationGradient)" rx="8" />
-                <text x="175" y="185" textAnchor="middle" className="foundation-label">
+                <rect x="75" y="220" width="300" height="75" fill="url(#foundationGradient)" rx="10" />
+                <text x="225" y="250" textAnchor="middle" className="foundation-label">
                   FoundationDB
                 </text>
-                <text x="175" y="205" textAnchor="middle" className="foundation-sublabel">
+                <text x="225" y="275" textAnchor="middle" className="foundation-sublabel">
                   Distributed • Ordered • Transactional
                 </text>
                 
@@ -135,15 +135,15 @@ const SolutionSection: React.FC = () => {
                 {Array.from({ length: 5 }).map((_, i) => (
                   <rect
                     key={i}
-                    x={60 + i * 48}
-                    y={100}
-                    width="44"
-                    height="50"
+                    x={90 + i * 58}
+                    y={140}
+                    width="54"
+                    height="65"
                     fill="#667eea"
                     fillOpacity="0.3"
                     stroke="#667eea"
                     strokeWidth="1"
-                    rx="4"
+                    rx="5"
                     className="building-block"
                     style={{ animationDelay: `${i * 0.2}s` }}
                   />

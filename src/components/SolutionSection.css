@@ -332,15 +332,15 @@
 
 .foundation-showcase {
   display: grid;
-  grid-template-columns: 350px 1fr;
+  grid-template-columns: 500px 1fr;
   gap: 3rem;
   align-items: center;
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
 .foundation-visualization {
-  padding: 1rem;
+  padding: 2rem;
   background: rgba(102, 126, 234, 0.02);
   border-radius: 16px;
   border: 1px solid rgba(102, 126, 234, 0.1);
@@ -353,13 +353,13 @@
 
 .foundation-label {
   fill: white;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 600;
 }
 
 .foundation-sublabel {
   fill: rgba(255, 255, 255, 0.6);
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 400;
   letter-spacing: 0.05em;
 }
