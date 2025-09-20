@@ -1,4 +1,4 @@
-# SNAPs: The Atomic Revolution in Distributed Systems
+# SNAPs: Subspace-Native Atomic Pieces
 
 ## Why We're Building This
 

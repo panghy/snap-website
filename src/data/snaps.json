@@ -1,0 +1,93 @@
+{
+  "$schema": "../../specs/001-build-a-catalogue/contracts/snaps-schema.json",
+  "version": "1.0.0",
+  "lastUpdated": "2025-09-19T00:00:00Z",
+  "snaps": [
+    {
+      "id": "leader-election-java",
+      "name": "Leader Election",
+      "description": "FoundationDB-backed leader election using versionstamps for ordering and time-based heartbeats",
+      "category": "other",
+      "repository": "https://github.com/panghy/leaderelection",
+      "languages": ["Java"],
+      "capabilities": {
+        "otelMetrics": true,
+        "otelTracing": true,
+        "multiTenancy": true,
+        "asyncApi": true
+      },
+      "platforms": [
+        {
+          "type": "language",
+          "name": "Java",
+          "version": "17+"
+        },
+        {
+          "type": "foundationdb",
+          "name": "FoundationDB",
+          "version": "7.3+"
+        }
+      ],
+      "maintainers": ["@panghy"],
+      "beta": true
+    },
+    {
+      "id": "vector-search-java",
+      "name": "Vector Search",
+      "description": "DiskANN-style vector search with Product Quantization, segmented indices, and exact re-rank",
+      "category": "search",
+      "repository": "https://github.com/panghy/vectorsearch",
+      "languages": ["Java"],
+      "capabilities": {
+        "otelMetrics": true,
+        "otelTracing": true,
+        "multiTenancy": true,
+        "batchOperations": true,
+        "asyncApi": true
+      },
+      "platforms": [
+        {
+          "type": "language",
+          "name": "Java",
+          "version": "17+"
+        },
+        {
+          "type": "foundationdb",
+          "name": "FoundationDB",
+          "version": "7.3+"
+        }
+      ],
+      "maintainers": ["@panghy"],
+      "beta": true
+    },
+    {
+      "id": "task-queue-java",
+      "name": "Task Queue",
+      "description": "Distributed task queue with at-most-once execution, versioning, and worker lease management",
+      "category": "queue",
+      "repository": "https://github.com/panghy/taskqueue",
+      "languages": ["Java"],
+      "capabilities": {
+        "otelMetrics": true,
+        "otelTracing": true,
+        "multiTenancy": true,
+        "batchOperations": true,
+        "asyncApi": true
+      },
+      "platforms": [
+        {
+          "type": "language",
+          "name": "Java",
+          "version": "17+"
+        },
+        {
+          "type": "foundationdb",
+          "name": "FoundationDB",
+          "version": "7.3+"
+        }
+      ],
+      "maintainers": ["@panghy"]
+    }
+  ],
+  "specifications": []
+}

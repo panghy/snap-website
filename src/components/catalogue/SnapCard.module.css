@@ -1,0 +1,263 @@
+.snapCard {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.snapCard:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+.snapCard.archived {
+  opacity: 0.7;
+  background: #f7fafc;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.titleSection {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.betaBadge {
+  padding: 0.2rem 0.5rem;
+  background: transparent;
+  color: #9f7aea;
+  border: 1px solid #9f7aea;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.snapNameLink {
+  text-decoration: none;
+  flex: 1;
+}
+
+.snapName {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  color: #2d3748;
+  transition: color 0.2s;
+}
+
+.snapNameLink:hover .snapName {
+  color: #667eea;
+}
+
+.categoryBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.snapDescription {
+  color: #4a5568;
+  line-height: 1.6;
+  margin: 0;
+  flex: 1;
+}
+
+.snapMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.languages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.languageTag {
+  padding: 0.25rem 0.5rem;
+  background: #edf2f7;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #4a5568;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.languageTag:hover {
+  background: #e2e8f0;
+  color: #2d3748;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.capabilities {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.capabilityBadge {
+  padding: 0.2rem 0.6rem;
+  background: rgba(102, 126, 234, 0.1);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #667eea;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.capabilityBadge:hover {
+  background: rgba(102, 126, 234, 0.2);
+  border-color: rgba(102, 126, 234, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+}
+
+.snapStats {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.repoLink {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4a5568;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.repoLink:hover {
+  color: #667eea;
+}
+
+.repoLink svg {
+  flex-shrink: 0;
+}
+
+.loadingMetrics {
+  font-size: 0.85rem;
+  color: #a0aec0;
+  font-style: italic;
+}
+
+.stars {
+  font-size: 0.9rem;
+  color: #4a5568;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.lastUpdate {
+  font-size: 0.85rem;
+  color: #718096;
+}
+
+.lastRelease {
+  font-size: 0.9rem;
+  color: #4a5568;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.license {
+  font-size: 0.9rem;
+  color: #4a5568;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.specificationLink {
+  padding-top: 0.75rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.specificationLink a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #667eea;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.specificationLink a:hover {
+  color: #764ba2;
+  text-decoration: underline;
+}
+
+.platforms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.platformReq {
+  padding: 0.2rem 0.5rem;
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  color: #4a5568;
+}
+
+.archivedNotice {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #fed7d7;
+  color: #c53030;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .snapCard {
+    padding: 1.25rem;
+  }
+
+  .snapName {
+    font-size: 1.1rem;
+  }
+
+  .categoryBadge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+  }
+}
