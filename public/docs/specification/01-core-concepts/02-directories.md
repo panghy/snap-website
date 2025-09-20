@@ -23,6 +23,71 @@ FoundationDB's Directory layer solves these problems by providing:
 - **Isolation Guarantees**: Complete separation between directory subspaces
 - **Multi-Tenancy Support**: Built-in tenant isolation through directory paths
 
+## Directory Configuration Requirement
+
+### Mandatory Directory Parameter
+
+**CRITICAL REQUIREMENT**: Every SNAP MUST accept its operating directory as a configuration parameter (either through constructor or configuration class). This design principle ensures:
+
+- **Multiple Instances**: Users can instantiate multiple SNAPs operating on different directories
+- **Complete Isolation**: Each SNAP instance operates entirely within its assigned directory
+- **State Portability**: An entire SNAP's state can be moved/copied by relocating its directory
+- **Testing Flexibility**: Tests can use separate directories without interference
+- **Disaster Recovery**: SNAPs can be re-opened on different directories for backup/restore
+
+```java
+// ✅ CORRECT - Directory provided as parameter
+public class UserSnap {
+    private final DirectorySubspace snapDirectory;
+
+    public UserSnap(Database db, List<String> directoryPath) {
+        this.snapDirectory = DirectoryLayer.getDefault()
+            .createOrOpen(db, directoryPath)
+            .get();
+    }
+
+    // Alternative: Configuration object approach
+    public UserSnap(Database db, SnapConfig config) {
+        this.snapDirectory = DirectoryLayer.getDefault()
+            .createOrOpen(db, config.getDirectoryPath())
+            .get();
+    }
+}
+
+// ❌ WRONG - Hardcoded directory path
+public class UserSnap {
+    private final DirectorySubspace snapDirectory;
+
+    public UserSnap(Database db) {
+        // Never hardcode directory paths!
+        this.snapDirectory = DirectoryLayer.getDefault()
+            .createOrOpen(db, List.of("users"))  // BAD!
+            .get();
+    }
+}
+```
+
+### Benefits of Directory Configuration
+
+This requirement enables powerful operational patterns:
+
+```java
+// Multiple isolated instances of the same SNAP
+UserSnap productionUsers = new UserSnap(db, List.of("prod", "users"));
+UserSnap stagingUsers = new UserSnap(db, List.of("staging", "users"));
+UserSnap testUsers = new UserSnap(db, List.of("test", "users"));
+
+// Move/copy entire SNAP state by directory operations
+DirectoryLayer.getDefault().move(db,
+    List.of("tenants", "old-tenant", "users"),
+    List.of("archive", "2024", "old-tenant", "users")
+).get();
+
+// Re-open SNAP on moved directory
+UserSnap archivedUsers = new UserSnap(db,
+    List.of("archive", "2024", "old-tenant", "users"));
+```
+
 ## Directory Fundamentals
 
 ### Directory Structure

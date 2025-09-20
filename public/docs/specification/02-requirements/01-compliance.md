@@ -11,24 +11,47 @@ This document defines the comprehensive requirements for SNAP certification. All
 
 ### 1. Directory Layer Usage
 
-**Requirement**: SNAPs MUST use FoundationDB's Directory layer exclusively for all key operations.
+**Requirement**: SNAPs MUST use FoundationDB's Directory layer exclusively for all key operations AND accept their operating directory as a configuration parameter.
 
 **Verification**:
 - ✅ All key operations use `DirectorySubspace.pack()` and `DirectorySubspace.unpack()`
 - ✅ No raw key construction (e.g., string concatenation, manual byte arrays)
 - ✅ Directory paths follow consistent naming conventions
 - ✅ Multi-tenant isolation through directory prefixing
+- ✅ **CRITICAL**: Directory path MUST be provided as constructor or configuration parameter
+- ✅ No hardcoded directory paths allowed
 
 ```java
-// ✅ COMPLIANT
-DirectorySubspace userDir = DirectoryLayer.getDefault()
-    .createOrOpen(db, List.of("tenants", tenantId, "users")).get();
-byte[] key = userDir.pack(userId);
+// ✅ COMPLIANT - Directory provided as parameter
+public class UserSnap {
+    private final DirectorySubspace userDir;
 
-// ❌ NON-COMPLIANT
-String rawKey = "users/" + userId;
-byte[] key = rawKey.getBytes();
+    public UserSnap(Database db, List<String> directoryPath) {
+        this.userDir = DirectoryLayer.getDefault()
+            .createOrOpen(db, directoryPath).get();
+    }
+}
+
+// Usage enables multiple isolated instances
+UserSnap prodUsers = new UserSnap(db, List.of("prod", "users"));
+UserSnap testUsers = new UserSnap(db, List.of("test", "users"));
+
+// ❌ NON-COMPLIANT - Hardcoded directory
+public class UserSnap {
+    public UserSnap(Database db) {
+        // Never hardcode paths - prevents isolation and portability!
+        this.userDir = DirectoryLayer.getDefault()
+            .createOrOpen(db, List.of("users")).get();
+    }
+}
 ```
+
+**Rationale for Directory Configuration**:
+- Enables multiple SNAP instances with complete isolation
+- Allows moving/copying entire SNAP state via directory operations
+- Facilitates testing with separate directory namespaces
+- Supports backup/restore and disaster recovery scenarios
+- Enables gradual migrations between SNAP versions
 
 ### 2. Transaction Composability
 
@@ -400,6 +423,7 @@ Use this checklist before submitting your SNAP:
 
 ### Architecture
 - [ ] Uses Directory layer exclusively
+- [ ] Directory path provided as constructor/config parameter (not hardcoded)
 - [ ] All write operations accept Transaction parameter
 - [ ] Minimal dependencies only
 - [ ] Language-agnostic data formats
