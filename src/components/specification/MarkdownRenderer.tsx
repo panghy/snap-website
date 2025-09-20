@@ -254,7 +254,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
     },
 
     // Custom code block renderer with syntax highlighting
-    code: ({ node, inline, className, children, ...props }: CodeProps) => {
+    code: ({ inline, className, children, ...props }: CodeProps) => {
       const match = /language-(\w+)/.exec(className || '');
       const language = match ? match[1] : '';
 

@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint'
 import { globalIgnores } from 'eslint/config'
 
 export default tseslint.config([
-  globalIgnores(['dist']),
+  globalIgnores(['dist', 'specs/**']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
@@ -18,6 +18,16 @@ export default tseslint.config([
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
+    },
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unused-vars': ['error', {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_'
+      }],
+      'react-hooks/exhaustive-deps': 'warn',
+      'no-case-declarations': 'off',
+      'prefer-const': 'warn',
     },
   },
 ])
