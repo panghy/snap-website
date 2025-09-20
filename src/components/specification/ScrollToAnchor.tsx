@@ -46,13 +46,13 @@ export const ScrollToAnchor: React.FC<ScrollToAnchorProps> = ({
       // Reset scrolling flag after animation completes
       scrollTimeoutRef.current = setTimeout(() => {
         isScrollingRef.current = false;
-      }, scrollBehavior === 'smooth' ? 1000 : 100);
+      }, scrollBehavior === 'smooth' ? SPECIFICATION_CONSTANTS.SCROLL_ANIMATION_DURATION_MS : SPECIFICATION_CONSTANTS.SCROLL_INSTANT_DURATION_MS);
 
       // Add visual highlight to the target element
       element.classList.add('scroll-target-highlight');
       setTimeout(() => {
         element.classList.remove('scroll-target-highlight');
-      }, 2000);
+      }, SPECIFICATION_CONSTANTS.SCROLL_HIGHLIGHT_DURATION_MS);
 
     } catch (error) {
       console.error('ScrollToAnchor: Error scrolling to element:', error);
@@ -79,7 +79,7 @@ export const ScrollToAnchor: React.FC<ScrollToAnchorProps> = ({
       // Small delay to ensure DOM is ready
       setTimeout(() => {
         scrollToElement(currentHash);
-      }, 50);
+      }, SPECIFICATION_CONSTANTS.SCROLL_INITIAL_DELAY_MS);
     }
   };
 
@@ -120,7 +120,7 @@ export const ScrollToAnchor: React.FC<ScrollToAnchorProps> = ({
       // Delay initial scroll to ensure content is rendered
       setTimeout(() => {
         scrollToElement(initialHash, 'auto'); // Use instant scroll for initial load
-      }, 100);
+      }, SPECIFICATION_CONSTANTS.SCROLL_INSTANT_DURATION_MS);
     }
 
     // Listen for hash changes
@@ -155,7 +155,7 @@ export const ScrollToAnchor: React.FC<ScrollToAnchorProps> = ({
         if (Math.abs(currentOffset - expectedOffset) > 50) {
           setTimeout(() => {
             scrollToElement(currentHash, 'auto');
-          }, 50);
+          }, SPECIFICATION_CONSTANTS.SCROLL_INITIAL_DELAY_MS);
         }
       }
     }

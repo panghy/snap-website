@@ -41,13 +41,6 @@
       "description": "Compliance criteria and specifications",
       "order": 2,
       "documents": ["01-compliance.md"]
-    },
-    {
-      "id": "03-examples",
-      "title": "Examples",
-      "description": "Reference implementations and patterns",
-      "order": 3,
-      "documents": ["01-task-queue.md"]
     }
   ]
 }
