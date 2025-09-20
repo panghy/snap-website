@@ -1,17 +1,15 @@
 import React from 'react';
-import type { SpecificationMetadata, SpecificationDocument } from '../../types/specification';
+import type { SpecificationMetadata } from '../../types/specification';
 import styles from './SpecificationHeader.module.css';
 
 interface SpecificationHeaderProps {
   metadata: SpecificationMetadata;
-  currentDocument: SpecificationDocument | null;
   onTocToggle: () => void;
   isTocVisible: boolean;
 }
 
 export const SpecificationHeader: React.FC<SpecificationHeaderProps> = ({
   metadata,
-  currentDocument,
   onTocToggle,
   isTocVisible,
 }) => {

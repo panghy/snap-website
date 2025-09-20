@@ -1,7 +1,6 @@
 import type {
   SpecificationDocument,
   SpecificationMetadata,
-  SpecificationSection,
   TableOfContents,
   Heading,
   MarkdownFrontmatter,
@@ -87,7 +86,7 @@ export class SpecificationService {
 
             // Parse arrays (simple implementation)
             if (value.startsWith('[') && value.endsWith(']')) {
-              value = value.slice(1, -1).split(',').map(v => v.trim().replace(/["']/g, ''));
+              value = value.slice(1, -1).split(',').map(v => v.trim().replace(/["']/g, '')) as any;
             }
 
             (frontmatter as any)[key] = value;

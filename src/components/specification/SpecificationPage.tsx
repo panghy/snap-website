@@ -268,7 +268,7 @@ export const SpecificationPage: React.FC = () => {
     };
 
     // Debounce scroll events
-    let scrollTimeout: NodeJS.Timeout;
+    let scrollTimeout: ReturnType<typeof setTimeout>;
     const debouncedScroll = () => {
       clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(handleScroll, 100);
@@ -310,7 +310,6 @@ export const SpecificationPage: React.FC = () => {
         <>
           <SpecificationHeader
             metadata={metadata}
-            currentDocument={currentDocument}
             onTocToggle={toggleToc}
             isTocVisible={isTocVisible}
           />

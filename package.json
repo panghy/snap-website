@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "test": "echo \"No tests configured\"",
     "validate:snaps": "node scripts/validate-snaps-json.js",
     "prepare": "husky"
   },

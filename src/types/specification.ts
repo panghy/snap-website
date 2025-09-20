@@ -46,6 +46,7 @@ export interface SpecificationMetadata {
   changelog: ChangeEntry[];
   authors: string[];
   license: string;
+  sections: SpecificationSection[];
 }
 
 export interface ChangeEntry {
