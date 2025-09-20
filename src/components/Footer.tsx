@@ -2,7 +2,7 @@ import React from 'react';
 import './Footer.css';
 
 interface FooterProps {
-  onNavigate?: (page: 'catalogue', filter?: { language?: string }) => void;
+  onNavigate?: (page: 'catalogue' | 'specification', filter?: { language?: string }) => void;
   isLightTheme?: boolean;
 }
 
@@ -21,7 +21,17 @@ const Footer: React.FC<FooterProps> = ({ onNavigate, isLightTheme }) => {
           <div className="footer-section">
             <h4>Resources</h4>
             <ul className="footer-links">
-              <li><a href="#" onClick={(e) => e.preventDefault()}>Specification</a></li>
+              <li>
+                <a
+                  href="#specification"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onNavigate?.('specification');
+                  }}
+                >
+                  Specification
+                </a>
+              </li>
               <li>
                 <a
                   href="#browse"
