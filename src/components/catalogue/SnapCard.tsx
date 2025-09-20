@@ -140,6 +140,11 @@ export const SnapCard: React.FC<SnapCardProps> = ({
             {snap.stars !== undefined && (
               <span className={styles.stars}>⭐ {snap.stars}</span>
             )}
+            {snap.lastRelease && (
+              <span className={styles.lastRelease}>
+                🚀 {snap.lastRelease}
+              </span>
+            )}
             {snap.lastCommit && (
               <span className={styles.lastUpdate}>
                 Updated {formatDate(snap.lastCommit)}

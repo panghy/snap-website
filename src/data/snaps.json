@@ -20,12 +20,12 @@
         {
           "type": "language",
           "name": "Java",
-          "version": "11+"
+          "version": "17+"
         },
         {
           "type": "foundationdb",
           "name": "FoundationDB",
-          "version": "7.1+"
+          "version": "7.3+"
         }
       ],
       "maintainers": ["@panghy"],
@@ -49,12 +49,12 @@
         {
           "type": "language",
           "name": "Java",
-          "version": "11+"
+          "version": "17+"
         },
         {
           "type": "foundationdb",
           "name": "FoundationDB",
-          "version": "7.1+"
+          "version": "7.3+"
         }
       ],
       "maintainers": ["@panghy"],
@@ -78,12 +78,12 @@
         {
           "type": "language",
           "name": "Java",
-          "version": "11+"
+          "version": "17+"
         },
         {
           "type": "foundationdb",
           "name": "FoundationDB",
-          "version": "7.1+"
+          "version": "7.3+"
         }
       ],
       "maintainers": ["@panghy"],
