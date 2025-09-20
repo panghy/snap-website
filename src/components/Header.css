@@ -8,6 +8,24 @@
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+.header.header-light {
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.header-light .logo-subtitle {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.header-light .nav-link {
+  color: #4a5568;
+}
+
+.header-light .nav-link:hover {
+  color: #667eea;
 }
 
 .header-container {

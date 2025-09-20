@@ -1,16 +1,35 @@
 import React from 'react';
 import './Header.css';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  onCatalogueClick?: () => void;
+  onHomeClick?: () => void;
+  isLightTheme?: boolean;
+}
+
+const Header: React.FC<HeaderProps> = ({ onCatalogueClick, onHomeClick, isLightTheme }) => {
   return (
-    <header className="header">
+    <header className={`header ${isLightTheme ? 'header-light' : ''}`}>
       <div className="header-container">
-        <div className="logo-section">
+        <div
+          className="logo-section"
+          onClick={onHomeClick}
+          style={{ cursor: onHomeClick ? 'pointer' : 'default' }}
+        >
           <h1 className="logo">SNAPs</h1>
           <span className="logo-subtitle">Subspace-Native Atomic Pieces</span>
         </div>
         <nav className="nav-menu">
-          <a href="#browse" className="nav-link">Browse</a>
+          <a
+            href="#browse"
+            className="nav-link"
+            onClick={(e) => {
+              e.preventDefault();
+              onCatalogueClick?.();
+            }}
+          >
+            Browse SNAPs
+          </a>
           <a href="#docs" className="nav-link">Docs</a>
           <a href="https://discord.gg/acfgTbdErv" target="_blank" rel="noopener noreferrer" className="nav-link discord">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">

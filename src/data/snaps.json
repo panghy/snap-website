@@ -1,0 +1,163 @@
+{
+  "$schema": "../../specs/001-build-a-catalogue/contracts/snaps-schema.json",
+  "version": "1.0.0",
+  "lastUpdated": "2025-09-19T00:00:00Z",
+  "snaps": [
+    {
+      "id": "fdb-queue-java",
+      "name": "FDB Queue",
+      "description": "High-performance distributed queue built on FoundationDB with exactly-once delivery guarantees",
+      "category": "queue",
+      "repository": "https://github.com/example/fdb-queue-java",
+      "languages": ["Java"],
+      "capabilities": {
+        "otelMetrics": true,
+        "otelTracing": true,
+        "multiTenancy": true,
+        "batchOperations": true,
+        "asyncApi": true
+      },
+      "platforms": [
+        {
+          "type": "language",
+          "name": "Java",
+          "version": "11+"
+        },
+        {
+          "type": "foundationdb",
+          "name": "FoundationDB",
+          "version": "7.1+"
+        }
+      ],
+      "specificationVersion": "1.0.0",
+      "maintainers": ["@example-user"],
+      "tags": ["messaging", "distributed", "acid"]
+    },
+    {
+      "id": "fdb-blob-python",
+      "name": "FDB BlobStore",
+      "description": "Scalable blob storage layer with chunking and deduplication support",
+      "category": "blobstore",
+      "repository": "https://github.com/example/fdb-blob-python",
+      "specificationRepository": "https://github.com/example/fdb-blob-spec",
+      "specificationId": "spec-blobstore",
+      "languages": ["Python"],
+      "capabilities": {
+        "encryption": true,
+        "compression": true,
+        "streaming": true,
+        "multiTenancy": true
+      },
+      "platforms": [
+        {
+          "type": "language",
+          "name": "Python",
+          "version": "3.8+"
+        },
+        {
+          "type": "foundationdb",
+          "name": "FoundationDB",
+          "version": "7.0+"
+        }
+      ],
+      "maintainers": ["@blob-team"]
+    },
+    {
+      "id": "fdb-search-go",
+      "name": "FDB Search",
+      "description": "Full-text search engine with inverted indices built on FoundationDB",
+      "category": "search",
+      "repository": "https://github.com/example/fdb-search-go",
+      "languages": ["Go"],
+      "capabilities": {
+        "otelMetrics": true,
+        "multiTenancy": true,
+        "asyncApi": true
+      },
+      "platforms": [
+        {
+          "type": "language",
+          "name": "Go",
+          "version": "1.19+"
+        },
+        {
+          "type": "foundationdb",
+          "name": "FoundationDB",
+          "version": "7.1+"
+        }
+      ],
+      "tags": ["search", "indexing", "full-text"]
+    },
+    {
+      "id": "fdb-graph-rust",
+      "name": "FDB Graph",
+      "description": "Graph database layer supporting Cypher-like queries on FoundationDB",
+      "category": "graph",
+      "repository": "https://github.com/example/fdb-graph-rust",
+      "languages": ["Rust"],
+      "capabilities": {
+        "streaming": true,
+        "batchOperations": true,
+        "multiTenancy": true
+      },
+      "platforms": [
+        {
+          "type": "language",
+          "name": "Rust",
+          "version": "1.70+"
+        },
+        {
+          "type": "foundationdb",
+          "name": "FoundationDB",
+          "version": "7.1+"
+        }
+      ],
+      "tags": ["graph", "cypher", "traversal"]
+    },
+    {
+      "id": "fdb-timeseries-java",
+      "name": "FDB TimeSeries",
+      "description": "Time-series database optimized for metrics and IoT data on FoundationDB",
+      "category": "timeseries",
+      "repository": "https://github.com/example/fdb-timeseries-java",
+      "languages": ["Java", "Scala"],
+      "capabilities": {
+        "otelMetrics": true,
+        "compression": true,
+        "batchOperations": true,
+        "streaming": true
+      },
+      "platforms": [
+        {
+          "type": "language",
+          "name": "Java",
+          "version": "17+"
+        },
+        {
+          "type": "foundationdb",
+          "name": "FoundationDB",
+          "version": "7.2+"
+        }
+      ],
+      "tags": ["metrics", "iot", "monitoring"]
+    }
+  ],
+  "specifications": [
+    {
+      "id": "spec-blobstore",
+      "name": "SNAP BlobStore Specification",
+      "description": "Language-agnostic specification for implementing blob storage on FoundationDB",
+      "repository": "https://github.com/example/fdb-blob-spec",
+      "version": "1.0.0",
+      "implementations": ["fdb-blob-python"]
+    },
+    {
+      "id": "spec-queue",
+      "name": "SNAP Queue Specification",
+      "description": "Specification for building distributed queues with exactly-once semantics",
+      "repository": "https://github.com/example/fdb-queue-spec",
+      "version": "2.0.0",
+      "implementations": ["fdb-queue-java"]
+    }
+  ]
+}

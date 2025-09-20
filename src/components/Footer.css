@@ -3,6 +3,29 @@
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   padding: 4rem 0 2rem;
   margin-top: 8rem;
+  transition: all 0.3s ease;
+}
+
+.footer.footer-light {
+  background: #f8f9fa;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  color: #2d3748;
+}
+
+.footer-light .footer-description,
+.footer-light .footer-section h4,
+.footer-light .footer-links a,
+.footer-light .footer-legal p,
+.footer-light .footer-copyright p {
+  color: #4a5568;
+}
+
+.footer-light .footer-links a:hover {
+  color: #667eea;
+}
+
+.footer-light .footer-legal a {
+  color: #667eea;
 }
 
 .footer-container {
