@@ -82,6 +82,7 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
       selectedLanguages: [],
       selectedCapabilities: [],
       showArchived: false,
+      showBeta: true,
     });
   };
 
@@ -203,6 +204,14 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
           </div>
 
           <div className={styles.filterSection}>
+            <label className={styles.filterOption} style={{ marginBottom: '0.75rem' }}>
+              <input
+                type="checkbox"
+                checked={filters.showBeta}
+                onChange={e => onFilterChange({ showBeta: e.target.checked })}
+              />
+              <span>Show Beta SNAPs</span>
+            </label>
             <label className={styles.filterOption}>
               <input
                 type="checkbox"

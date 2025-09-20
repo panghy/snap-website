@@ -16,6 +16,12 @@ export function sortSnaps(snaps: SnapEntry[], sortState: SortState): SnapEntry[]
         const aStars = a.stars ?? 0;
         const bStars = b.stars ?? 0;
         comparison = bStars - aStars; // Higher stars first by default
+        // Use lastCommit as tiebreaker
+        if (comparison === 0) {
+          const aDate = a.lastCommit ? new Date(a.lastCommit).getTime() : 0;
+          const bDate = b.lastCommit ? new Date(b.lastCommit).getTime() : 0;
+          comparison = bDate - aDate; // More recent first
+        }
         break;
 
       case 'lastCommit':

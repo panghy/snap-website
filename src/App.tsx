@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Header from './components/Header'
 import HeroSection from './components/HeroSection'
 import ProblemSection from './components/ProblemSection'
@@ -9,8 +9,23 @@ import { CataloguePage } from './components/catalogue/CataloguePage'
 import './App.css'
 
 function App() {
-  const [showCatalogue, setShowCatalogue] = useState(false)
+  // Check URL on initial load
+  const initialShowCatalogue = window.location.pathname === '/catalogue' ||
+                              window.location.search.includes('view=catalogue')
+
+  const [showCatalogue, setShowCatalogue] = useState(initialShowCatalogue)
   const [catalogueFilter, setCatalogueFilter] = useState<{ language?: string }>()
+
+  // Update URL when view changes
+  useEffect(() => {
+    const url = new URL(window.location.href)
+    if (showCatalogue) {
+      url.searchParams.set('view', 'catalogue')
+    } else {
+      url.searchParams.delete('view')
+    }
+    window.history.replaceState({}, '', url.toString())
+  }, [showCatalogue])
 
   const handleNavigate = (page: 'catalogue', filter?: { language?: string }) => {
     if (page === 'catalogue') {

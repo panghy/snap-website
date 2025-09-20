@@ -55,6 +55,7 @@ export interface SnapEntry {
   maintainers?: string[];
   tags?: string[];
   archived?: boolean;
+  beta?: boolean;
   // Derived from GitHub API
   stars?: number;
   lastCommit?: string;
@@ -85,6 +86,7 @@ export interface FilterState {
   selectedLanguages: string[];
   selectedCapabilities: (keyof SnapCapabilities)[];
   showArchived: boolean;
+  showBeta: boolean;
   viewMode: 'snaps' | 'specifications';
 }
 

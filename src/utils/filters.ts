@@ -48,6 +48,11 @@ export function filterSnaps(
       return false;
     }
 
+    // Beta filter
+    if (!filters.showBeta && snap.beta) {
+      return false;
+    }
+
     return true;
   });
 }

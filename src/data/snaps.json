@@ -29,7 +29,8 @@
         }
       ],
       "maintainers": ["@panghy"],
-      "tags": ["consensus", "distributed", "coordination"]
+      "tags": ["consensus", "distributed", "coordination"],
+      "beta": true
     },
     {
       "id": "vector-search-java",
@@ -58,7 +59,8 @@
         }
       ],
       "maintainers": ["@panghy"],
-      "tags": ["vector", "similarity", "embedding", "search"]
+      "tags": ["vector", "similarity", "embedding", "search"],
+      "beta": true
     },
     {
       "id": "task-queue-java",

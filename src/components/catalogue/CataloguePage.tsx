@@ -30,11 +30,12 @@ export const CataloguePage: React.FC<CataloguePageProps> = ({ initialFilter }) =
     selectedLanguages: initialFilter?.language ? [initialFilter.language] : [],
     selectedCapabilities: [],
     showArchived: false,
+    showBeta: true,
     viewMode: 'snaps',
   });
   const [sortState, setSortState] = useState<SortState>({
-    field: 'name',
-    direction: 'asc',
+    field: 'stars',
+    direction: 'desc',
   });
   const [githubMetrics, setGithubMetrics] = useState<Map<string, any>>(new Map());
   const [isLoadingMetrics, setIsLoadingMetrics] = useState(true);

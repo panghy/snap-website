@@ -28,6 +28,26 @@
   gap: 1rem;
 }
 
+.titleSection {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.betaBadge {
+  padding: 0.2rem 0.5rem;
+  background: transparent;
+  color: #9f7aea;
+  border: 1px solid #9f7aea;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 .snapNameLink {
   text-decoration: none;
   flex: 1;
