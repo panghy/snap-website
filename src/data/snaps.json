@@ -6,7 +6,7 @@
     {
       "id": "leader-election-java",
       "name": "Leader Election",
-      "description": "Distributed leader election implementation for FoundationDB with automatic failover",
+      "description": "FoundationDB-backed leader election using versionstamps for ordering and time-based heartbeats",
       "category": "other",
       "repository": "https://github.com/panghy/leaderelection",
       "languages": ["Java"],
@@ -29,13 +29,13 @@
         }
       ],
       "maintainers": ["@panghy"],
-      "tags": ["consensus", "distributed", "coordination"],
+      "tags": ["consensus", "distributed", "coordination", "versionstamp", "heartbeat"],
       "beta": true
     },
     {
       "id": "vector-search-java",
       "name": "Vector Search",
-      "description": "High-performance vector similarity search engine built on FoundationDB",
+      "description": "DiskANN-style vector search with Product Quantization, segmented indices, and exact re-rank",
       "category": "search",
       "repository": "https://github.com/panghy/vectorsearch",
       "languages": ["Java"],
@@ -59,13 +59,13 @@
         }
       ],
       "maintainers": ["@panghy"],
-      "tags": ["vector", "similarity", "embedding", "search"],
+      "tags": ["vector", "similarity", "embedding", "search", "diskann", "pq"],
       "beta": true
     },
     {
       "id": "task-queue-java",
       "name": "Task Queue",
-      "description": "Distributed task queue with priority support and exactly-once processing guarantees",
+      "description": "Distributed task queue with at-most-once execution, versioning, and worker lease management",
       "category": "queue",
       "repository": "https://github.com/panghy/taskqueue",
       "languages": ["Java"],
@@ -89,7 +89,7 @@
         }
       ],
       "maintainers": ["@panghy"],
-      "tags": ["queue", "tasks", "distributed", "priority"]
+      "tags": ["queue", "tasks", "distributed", "fifo", "at-most-once", "versioning"]
     }
   ],
   "specifications": []
