@@ -1,0 +1,146 @@
+name: PR Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  pr-validation:
+    name: PR Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for comparisons
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for build artifacts
+        run: |
+          if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E '^dist/|^build/'; then
+            echo "❌ Build artifacts should not be committed"
+            echo "Please remove dist/ or build/ files from your PR"
+            exit 1
+          fi
+          echo "✅ No build artifacts found"
+
+      - name: Check for large files
+        run: |
+          large_files=$(find . -type f -size +1M -not -path "./.git/*" -not -path "./node_modules/*" -not -path "./dist/*" -not -path "./build/*" -not -name "*.lock" -not -name "package-lock.json")
+          if [ ! -z "$large_files" ]; then
+            echo "❌ Large files detected (>1MB):"
+            echo "$large_files"
+            echo "Please review if these files are necessary"
+            exit 1
+          fi
+          echo "✅ No large files detected"
+
+      - name: Run build
+        run: npm run build
+
+      - name: Run tests
+        run: npm run test:run
+
+      - name: Check bundle size
+        run: |
+          echo "📦 Bundle Size Report"
+          echo "====================="
+
+          # Find the main JS bundle
+          main_bundle=$(find dist/assets -name "index-*.js" -type f | head -1)
+
+          if [ -f "$main_bundle" ]; then
+            size_kb=$(du -k "$main_bundle" | cut -f1)
+            echo "Main bundle: ${size_kb}KB"
+
+            # Warn if bundle is over 1MB
+            if [ "$size_kb" -gt 1024 ]; then
+              echo "⚠️ Warning: Main bundle is over 1MB (${size_kb}KB)"
+              echo "Consider code splitting or lazy loading"
+            else
+              echo "✅ Bundle size is acceptable"
+            fi
+          else
+            echo "Bundle not found - skipping size check"
+          fi
+
+      - name: Comment PR with checks summary
+        uses: actions/github-script@v7
+        if: always()
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const { execSync } = require('child_process');
+
+            let comment = '## 🤖 Automated PR Checks\n\n';
+
+            // Get test results
+            try {
+              const testOutput = execSync('npm run test:run -- --reporter=json', { encoding: 'utf-8' });
+              const testResults = JSON.parse(testOutput);
+              comment += `✅ **Tests:** ${testResults.numPassedTests} passed\n`;
+            } catch (e) {
+              comment += `❌ **Tests:** Failed to run\n`;
+            }
+
+            // Check if build succeeded
+            try {
+              execSync('npm run build', { stdio: 'ignore' });
+              comment += `✅ **Build:** Successful\n`;
+            } catch (e) {
+              comment += `❌ **Build:** Failed\n`;
+            }
+
+            // Get bundle size
+            try {
+              const bundleFiles = fs.readdirSync('dist/assets').filter(f => f.endsWith('.js'));
+              const mainBundle = bundleFiles.find(f => f.startsWith('index-'));
+              if (mainBundle) {
+                const stats = fs.statSync(`dist/assets/${mainBundle}`);
+                const sizeKB = Math.round(stats.size / 1024);
+                comment += `📦 **Bundle Size:** ${sizeKB}KB\n`;
+              }
+            } catch (e) {
+              // Ignore bundle size errors
+            }
+
+            comment += '\n---\n';
+            comment += '_This comment is automatically generated and will be updated on each push._';
+
+            // Find and update or create comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('🤖 Automated PR Checks')
+            );
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: comment
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }
