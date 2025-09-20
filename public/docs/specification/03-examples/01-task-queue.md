@@ -95,9 +95,10 @@ public interface TaskQueueSnap {
 ### Basic Usage
 
 ```java
-// Initialize the Task Queue SNAP
+// Initialize the Task Queue SNAP with directory configuration
 Database db = FDB.selectAPIVersion(730).open();
-TaskQueueSnap taskQueue = new FoundationDBTaskQueueSnap(db, "acme-corp");
+List<String> queueDirectory = List.of("tenants", "acme-corp", "queues");
+TaskQueueSnap taskQueue = new FoundationDBTaskQueueSnap(db, queueDirectory);
 
 // Enqueue a task
 TaskData emailTask = TaskData.builder()
@@ -153,6 +154,14 @@ public class OrderProcessor {
     private final OrderSnap orderSnap;
     private final TaskQueueSnap taskQueue;
     private final Database db;
+
+    public OrderProcessor(Database db, String tenantId) {
+        this.db = db;
+        // Each SNAP gets its own directory configuration
+        this.userSnap = new UserSnap(db, List.of("tenants", tenantId, "users"));
+        this.orderSnap = new OrderSnap(db, List.of("tenants", tenantId, "orders"));
+        this.taskQueue = new FoundationDBTaskQueueSnap(db, List.of("tenants", tenantId, "queues"));
+    }
 
     public OrderResult processOrder(PlaceOrderRequest request) {
         return db.run(tx -> {
