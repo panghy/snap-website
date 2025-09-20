@@ -134,7 +134,9 @@ export const SpecificationPage: React.FC = () => {
 
       // Scroll to top of content (accounting for fixed header)
       setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (typeof window !== 'undefined') {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
       }, 50);
     } catch (err) {
       console.error('Failed to load document:', err);
