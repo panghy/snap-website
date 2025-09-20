@@ -61,6 +61,7 @@ export interface SnapEntry {
   lastCommit?: string;
   lastRelease?: string;
   openIssues?: number;
+  license?: string;
 }
 
 export interface SnapSpecification {

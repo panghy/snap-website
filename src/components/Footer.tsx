@@ -21,7 +21,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate, isLightTheme }) => {
           <div className="footer-section">
             <h4>Resources</h4>
             <ul className="footer-links">
-              <li><a href="#docs">Documentation</a></li>
+              <li><a href="#" onClick={(e) => e.preventDefault()}>Specification</a></li>
               <li>
                 <a
                   href="#browse"

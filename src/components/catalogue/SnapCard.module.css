@@ -190,6 +190,14 @@
   gap: 0.25rem;
 }
 
+.license {
+  font-size: 0.9rem;
+  color: #4a5568;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
 .specificationLink {
   padding-top: 0.75rem;
   border-top: 1px solid #e2e8f0;

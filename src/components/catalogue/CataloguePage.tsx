@@ -64,6 +64,7 @@ export const CataloguePage: React.FC<CataloguePageProps> = ({ initialFilter }) =
           lastCommit: metrics.lastCommit,
           lastRelease: metrics.lastRelease,
           openIssues: metrics.openIssues,
+          license: metrics.license,
         };
       }
       return snap;

@@ -150,6 +150,11 @@ export const SnapCard: React.FC<SnapCardProps> = ({
                 🚀 {snap.lastRelease}
               </span>
             )}
+            {snap.license && (
+              <span className={styles.license}>
+                📜 {snap.license}
+              </span>
+            )}
             {snap.lastCommit && (
               <span className={styles.lastUpdate}>
                 Updated {formatDate(snap.lastCommit)}

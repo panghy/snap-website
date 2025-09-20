@@ -53,6 +53,53 @@
   margin-right: 0.25rem;
 }
 
+.statLabel {
+  position: relative;
+  border-bottom: 1px dotted #a0aec0;
+  cursor: help;
+  padding-bottom: 1px;
+}
+
+.statLabel:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(5px);
+  background: #f7fafc;
+  color: #2d3748;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  width: 280px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  z-index: 1000;
+  margin-bottom: 0.5rem;
+  font-weight: normal;
+  text-align: left;
+}
+
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #f7fafc;
+  filter: drop-shadow(0 1px 0 #e2e8f0);
+}
+
 .headerActions {
   display: flex;
   gap: 1rem;

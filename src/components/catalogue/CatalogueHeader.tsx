@@ -16,14 +16,26 @@ export const CatalogueHeader: React.FC<CatalogueHeaderProps> = ({
           <div>
             <h1 className={styles.title}>Browse SNAPs</h1>
             <p className={styles.subtitle}>
-              Discover and contribute to the ecosystem of composable FoundationDB layers
+              Discover and contribute to the ecosystem of composable FoundationDB SNAP-compliant layers
             </p>
             <div className={styles.stats}>
               <span className={styles.statItem}>
-                <strong>{totalSnaps}</strong> SNAPs
+                <strong>{totalSnaps}</strong>{' '}
+                <span className={styles.statLabel}>
+                  SNAPs
+                  <span className={styles.tooltip}>
+                    Subspace-Native Atomic Pieces - Production-ready implementations of specific data structures and patterns built on FoundationDB
+                  </span>
+                </span>
               </span>
               <span className={styles.statItem}>
-                <strong>{totalSpecs}</strong> Specifications
+                <strong>{totalSpecs}</strong>{' '}
+                <span className={styles.statLabel}>
+                  Specifications
+                  <span className={styles.tooltip}>
+                    Formal specifications defining the interface and behavior that SNAPs must implement for a particular use case
+                  </span>
+                </span>
               </span>
             </div>
           </div>
