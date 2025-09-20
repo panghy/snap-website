@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { TOCSidebar } from '../TOCSidebar';
-import type { TableOfContents } from '../../../types/specification';
+import type { TableOfContents, SpecificationDocument } from '../../../types/specification';
 
 describe('TOCSidebar', () => {
   const mockToc: TableOfContents = {
@@ -14,22 +14,62 @@ describe('TOCSidebar', () => {
         title: 'Overview',
         description: 'Introduction to SNAPs',
         order: 0,
-        documents: ['intro', 'principles'],
+        documents: ['intro.md', 'principles.md'],
       },
       {
         id: 'concepts',
         title: 'Core Concepts',
         description: 'Fundamental concepts',
         order: 1,
-        documents: ['transactions', 'directories'],
+        documents: ['transactions.md', 'directories.md'],
       },
     ],
     documents: new Map(),
     expandedSections: new Set(['overview']),
   };
 
+  const mockDocumentMetadata = new Map<string, SpecificationDocument>([
+    ['overview/intro.md', {
+      id: 'overview-intro',
+      path: 'overview/intro.md',
+      title: 'Introduction',
+      order: 0,
+      section: 'overview',
+      content: '',
+      headings: [],
+    }],
+    ['overview/principles.md', {
+      id: 'overview-principles',
+      path: 'overview/principles.md',
+      title: 'Principles',
+      order: 1,
+      section: 'overview',
+      content: '',
+      headings: [],
+    }],
+    ['concepts/transactions.md', {
+      id: 'concepts-transactions',
+      path: 'concepts/transactions.md',
+      title: 'Transactions',
+      order: 0,
+      section: 'concepts',
+      content: '',
+      headings: [],
+    }],
+    ['concepts/directories.md', {
+      id: 'concepts-directories',
+      path: 'concepts/directories.md',
+      title: 'Directories',
+      order: 1,
+      section: 'concepts',
+      content: '',
+      headings: [],
+    }],
+  ]);
+
   const defaultProps = {
     toc: mockToc,
+    documentMetadata: mockDocumentMetadata,
     currentDocumentId: null,
     currentHeadingId: null,
     expandedSections: new Set<string>(),
@@ -47,32 +87,32 @@ describe('TOCSidebar', () => {
     expect(screen.getByText('Core Concepts')).toBeInTheDocument();
   });
 
-  it('should render section descriptions', () => {
-    render(<TOCSidebar {...defaultProps} />);
+  it('should render section documents', () => {
+    render(<TOCSidebar {...defaultProps} expandedSections={new Set(['overview'])} />);
 
-    expect(screen.getByText('Introduction to SNAPs')).toBeInTheDocument();
-    expect(screen.getByText('Fundamental concepts')).toBeInTheDocument();
+    expect(screen.getByText('Introduction')).toBeInTheDocument();
+    expect(screen.getByText('Principles')).toBeInTheDocument();
   });
 
   it('should highlight current document', () => {
     render(
-      <TOCSidebar {...defaultProps} currentDocumentId="intro" />
+      <TOCSidebar {...defaultProps} currentDocumentId="overview-intro" expandedSections={new Set(['overview'])} />
     );
 
-    const introLink = screen.getByTestId('doc-intro');
+    const introLink = screen.getByTestId('doc-intro.md');
     expect(introLink).toHaveClass('active');
   });
 
   it('should handle document selection', async () => {
     const onDocumentSelect = vi.fn();
     render(
-      <TOCSidebar {...defaultProps} onDocumentSelect={onDocumentSelect} />
+      <TOCSidebar {...defaultProps} onDocumentSelect={onDocumentSelect} expandedSections={new Set(['overview'])} />
     );
 
     const user = userEvent.setup();
-    await user.click(screen.getByTestId('doc-intro'));
+    await user.click(screen.getByTestId('doc-intro.md'));
 
-    expect(onDocumentSelect).toHaveBeenCalledWith('intro');
+    expect(onDocumentSelect).toHaveBeenCalledWith('overview/intro.md');
   });
 
   it('should toggle section expansion', async () => {

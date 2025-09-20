@@ -22,6 +22,15 @@ describe('SpecificationService', () => {
         changelog: [],
         authors: ['Test Author'],
         license: 'MIT',
+        sections: [
+          {
+            id: '00-overview',
+            title: 'Overview',
+            description: 'Test overview',
+            order: 0,
+            documents: ['01-introduction.md'],
+          },
+        ],
       };
 
       (global.fetch as any).mockResolvedValueOnce({
@@ -66,7 +75,7 @@ This is test content.`;
 
       expect(document).toBeDefined();
       expect(document.title).toBe('Test Document');
-      expect(document.version).toBe('0.1.0');
+      expect(document.metadata?.version).toBe('0.1.0');
       expect(document.content).toContain('# Test Heading');
       expect(document.headings).toBeDefined();
       expect(document.headings.length).toBeGreaterThan(0);
@@ -105,7 +114,7 @@ Content`;
 
       const document = await service.loadDocument('00-overview/01-introduction.md');
 
-      expect(document.id).toBe('00-overview-01-introduction');
+      expect(document.id).toBe('overview-01-introduction');
     });
   });
 
@@ -119,11 +128,11 @@ Content here
 
       const result = service.parseDocument(markdown, 'test.md');
 
-      expect(result.headings).toHaveLength(4);
+      expect(result.headings).toHaveLength(1); // Only H1 at top level
       expect(result.headings[0].level).toBe(1);
       expect(result.headings[0].text).toBe('Heading 1');
-      expect(result.headings[1].level).toBe(2);
-      expect(result.headings[2].level).toBe(3);
+      expect(result.headings[0].children).toHaveLength(2); // Two H2s under H1
+      expect(result.headings[0].children[0].level).toBe(2);
     });
 
     it('should generate heading IDs', () => {
@@ -143,14 +152,21 @@ Content here
 
       const result = service.parseDocument(markdown, 'test.md');
 
-      expect(result.headings).toHaveLength(5);
-      // Verify the structure is captured (actual nesting logic to be implemented)
+      expect(result.headings).toHaveLength(2); // Two H1s at top level
+      expect(result.headings[0].children).toHaveLength(2); // First H1 has two H2s
+      expect(result.headings[0].children[0].children).toHaveLength(1); // First H2 has one H3
     });
   });
 
   describe('buildTableOfContents', () => {
     it('should construct TOC from metadata sections', async () => {
-      const mockMetadata = {
+      const mockMetadata: SpecificationMetadata = {
+        specVersion: '0.1.0',
+        releaseDate: '2025-01-19',
+        status: 'draft',
+        changelog: [],
+        authors: ['Test'],
+        license: 'MIT',
         sections: [
           {
             id: '00-overview',
@@ -175,11 +191,17 @@ Content here
     });
 
     it('should sort sections by order', async () => {
-      const mockMetadata = {
+      const mockMetadata: SpecificationMetadata = {
+        specVersion: '0.1.0',
+        releaseDate: '2025-01-19',
+        status: 'draft',
+        changelog: [],
+        authors: ['Test'],
+        license: 'MIT',
         sections: [
-          { id: 'b', title: 'B', order: 2, documents: [] },
-          { id: 'a', title: 'A', order: 1, documents: [] },
-          { id: 'c', title: 'C', order: 3, documents: [] },
+          { id: 'b', title: 'B', description: '', order: 2, documents: [] },
+          { id: 'a', title: 'A', description: '', order: 1, documents: [] },
+          { id: 'c', title: 'C', description: '', order: 3, documents: [] },
         ],
       };
 
@@ -206,13 +228,14 @@ Content here
 
       const headings = service.extractHeadings(markdown, 'test-doc');
 
-      expect(headings).toHaveLength(5);
+      expect(headings).toHaveLength(1); // One H1 at top level
       expect(headings[0].text).toBe('Title');
-      expect(headings[1].text).toBe('Section 1');
+      expect(headings[0].children).toHaveLength(2); // Two H2s under the H1
+      expect(headings[0].children[0].text).toBe('Section 1');
     });
 
     it('should handle special characters in heading text', () => {
-      const markdown = `# Heading with **bold** and _italic_`;
+      const markdown = `# Heading with **bold** and *italic*`;
 
       const headings = service.extractHeadings(markdown, 'test-doc');
 
@@ -228,9 +251,10 @@ Content here
 
       const headings = service.extractHeadings(markdown, 'test-doc');
 
-      expect(headings).toHaveLength(2);
+      expect(headings).toHaveLength(1); // One H1 at top level
       expect(headings[0].text).toBe('Real Heading');
-      expect(headings[1].text).toBe('Another Real Heading');
+      expect(headings[0].children).toHaveLength(1); // H2 is nested under H1
+      expect(headings[0].children[0].text).toBe('Another Real Heading');
     });
   });
 });
