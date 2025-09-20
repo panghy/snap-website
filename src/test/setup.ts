@@ -1,5 +1,12 @@
 import '@testing-library/jest-dom'
-import { vi } from 'vitest'
+import { vi, afterEach } from 'vitest'
+
+// Clean up after each test
+afterEach(() => {
+  // Clear all timers to prevent async operations from continuing
+  vi.clearAllTimers()
+  vi.clearAllMocks()
+})
 
 // Mock fetch globally
 global.fetch = vi.fn()
