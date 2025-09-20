@@ -73,74 +73,27 @@ jobs:
             echo "Bundle not found - skipping size check"
           fi
 
-      - name: Comment PR with checks summary
-        uses: actions/github-script@v7
-        if: always()
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const fs = require('fs');
-            const { execSync } = require('child_process');
+      - name: Check test results
+        id: test-check
+        run: |
+          if npm run test:run; then
+            echo "tests_passed=true" >> $GITHUB_OUTPUT
+          else
+            echo "tests_passed=false" >> $GITHUB_OUTPUT
+          fi
+        continue-on-error: true
 
-            let comment = '## 🤖 Automated PR Checks\n\n';
-
-            // Get test results
-            try {
-              const testOutput = execSync('npm run test:run -- --reporter=json', { encoding: 'utf-8' });
-              const testResults = JSON.parse(testOutput);
-              comment += `✅ **Tests:** ${testResults.numPassedTests} passed\n`;
-            } catch (e) {
-              comment += `❌ **Tests:** Failed to run\n`;
-            }
-
-            // Check if build succeeded
-            try {
-              execSync('npm run build', { stdio: 'ignore' });
-              comment += `✅ **Build:** Successful\n`;
-            } catch (e) {
-              comment += `❌ **Build:** Failed\n`;
-            }
-
-            // Get bundle size
-            try {
-              const bundleFiles = fs.readdirSync('dist/assets').filter(f => f.endsWith('.js'));
-              const mainBundle = bundleFiles.find(f => f.startsWith('index-'));
-              if (mainBundle) {
-                const stats = fs.statSync(`dist/assets/${mainBundle}`);
-                const sizeKB = Math.round(stats.size / 1024);
-                comment += `📦 **Bundle Size:** ${sizeKB}KB\n`;
-              }
-            } catch (e) {
-              // Ignore bundle size errors
-            }
-
-            comment += '\n---\n';
-            comment += '_This comment is automatically generated and will be updated on each push._';
-
-            // Find and update or create comment
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
-
-            const botComment = comments.find(comment =>
-              comment.user.type === 'Bot' &&
-              comment.body.includes('🤖 Automated PR Checks')
-            );
-
-            if (botComment) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: botComment.id,
-                body: comment
-              });
-            } else {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body: comment
-              });
-            }
+      - name: Get bundle size
+        id: bundle-size
+        run: |
+          if [ -d "dist/assets" ]; then
+            main_bundle=$(find dist/assets -name "index-*.js" -type f | head -1)
+            if [ -f "$main_bundle" ]; then
+              size_kb=$(du -k "$main_bundle" | cut -f1)
+              echo "bundle_size=${size_kb}KB" >> $GITHUB_OUTPUT
+            else
+              echo "bundle_size=N/A" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "bundle_size=N/A" >> $GITHUB_OUTPUT
+          fi

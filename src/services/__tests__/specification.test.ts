@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { SpecificationService } from '../specification';
-import type { SpecificationDocument, TableOfContents, SpecificationMetadata } from '../../types/specification';
+import type { SpecificationMetadata } from '../../types/specification';
 
 // Mock fetch globally
 const mockFetch = vi.fn();

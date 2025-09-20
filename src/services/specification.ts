@@ -57,7 +57,7 @@ export class SpecificationService {
 
   parseDocument(content: string, path: string): SpecificationDocument {
     // Simple frontmatter parser that works in the browser
-    let frontmatter: MarkdownFrontmatter = {
+    const frontmatter: MarkdownFrontmatter = {
       title: 'Untitled',
     };
 

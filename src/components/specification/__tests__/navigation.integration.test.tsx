@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SpecificationPage } from '../SpecificationPage';
 
@@ -7,7 +7,7 @@ import { SpecificationPage } from '../SpecificationPage';
 global.fetch = vi.fn();
 
 // Mock IntersectionObserver for scroll-based navigation
-global.IntersectionObserver = vi.fn().mockImplementation((callback) => ({
+global.IntersectionObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn(),
@@ -73,7 +73,7 @@ describe('Specification Page Integration - Navigation', () => {
 
       if (url.includes('.md')) {
         const fileName = url.split('/').pop();
-        let content = `---
+        const content = `---
 title: ${fileName?.replace('.md', '').replace(/^\d+-/, '').replace('-', ' ')}
 version: 0.1.0
 date: 2025-01-19
