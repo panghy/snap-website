@@ -86,10 +86,11 @@ export class SpecificationService {
 
             // Parse arrays (simple implementation)
             if (value.startsWith('[') && value.endsWith(']')) {
-              value = value.slice(1, -1).split(',').map(v => v.trim().replace(/["']/g, '')) as any;
+              const arrayValue = value.slice(1, -1).split(',').map(v => v.trim().replace(/["']/g, ''));
+              frontmatter[key] = arrayValue;
+            } else {
+              frontmatter[key] = value;
             }
-
-            (frontmatter as any)[key] = value;
           }
         }
       }

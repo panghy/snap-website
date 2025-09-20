@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import type { ReactNode } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -10,6 +11,38 @@ interface MarkdownRendererProps {
   document: SpecificationDocument;
   onHeadingClick: (headingId: string) => void;
   currentHeadingId: string | null;
+}
+
+// Type definitions for ReactMarkdown component props
+interface HeadingProps {
+  children?: ReactNode;
+  node?: any;
+  [key: string]: any;
+}
+
+interface CodeProps {
+  children?: ReactNode;
+  inline?: boolean;
+  className?: string;
+  node?: any;
+  [key: string]: any;
+}
+
+interface LinkProps {
+  children?: ReactNode;
+  href?: string;
+  [key: string]: any;
+}
+
+interface ImageProps {
+  src?: string;
+  alt?: string;
+  [key: string]: any;
+}
+
+interface GenericProps {
+  children?: ReactNode;
+  [key: string]: any;
 }
 
 export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
@@ -34,7 +67,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
 
   const components = useMemo(() => ({
     // Custom heading renderer with click handlers
-    h1: ({ children, ...props }: any) => {
+    h1: ({ children, ...props }: HeadingProps) => {
       const headingText = typeof children === 'string' ? children : children?.toString() || '';
       const headingId = headingText.toLowerCase()
         .replace(/[^a-z0-9\s-]/g, '')
@@ -65,7 +98,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
       );
     },
 
-    h2: ({ children, ...props }: any) => {
+    h2: ({ children, ...props }: HeadingProps) => {
       const headingText = typeof children === 'string' ? children : children?.toString() || '';
       const headingId = headingText.toLowerCase()
         .replace(/[^a-z0-9\s-]/g, '')
@@ -96,7 +129,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
       );
     },
 
-    h3: ({ children, ...props }: any) => {
+    h3: ({ children, ...props }: HeadingProps) => {
       const headingText = typeof children === 'string' ? children : children?.toString() || '';
       const headingId = headingText.toLowerCase()
         .replace(/[^a-z0-9\s-]/g, '')
@@ -127,7 +160,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
       );
     },
 
-    h4: ({ children, ...props }: any) => {
+    h4: ({ children, ...props }: HeadingProps) => {
       const headingText = typeof children === 'string' ? children : children?.toString() || '';
       const headingId = headingText.toLowerCase()
         .replace(/[^a-z0-9\s-]/g, '')
@@ -158,7 +191,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
       );
     },
 
-    h5: ({ children, ...props }: any) => {
+    h5: ({ children, ...props }: HeadingProps) => {
       const headingText = typeof children === 'string' ? children : children?.toString() || '';
       const headingId = headingText.toLowerCase()
         .replace(/[^a-z0-9\s-]/g, '')
@@ -189,7 +222,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
       );
     },
 
-    h6: ({ children, ...props }: any) => {
+    h6: ({ children, ...props }: HeadingProps) => {
       const headingText = typeof children === 'string' ? children : children?.toString() || '';
       const headingId = headingText.toLowerCase()
         .replace(/[^a-z0-9\s-]/g, '')
@@ -221,7 +254,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
     },
 
     // Custom code block renderer with syntax highlighting
-    code: ({ node, inline, className, children, ...props }: any) => {
+    code: ({ node, inline, className, children, ...props }: CodeProps) => {
       const match = /language-(\w+)/.exec(className || '');
       const language = match ? match[1] : '';
 
@@ -258,7 +291,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
     },
 
     // Custom table renderer
-    table: ({ children, ...props }: any) => (
+    table: ({ children, ...props }: GenericProps) => (
       <div className={styles.tableContainer}>
         <table className={styles.table} {...props}>
           {children}
@@ -267,14 +300,14 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
     ),
 
     // Custom blockquote renderer
-    blockquote: ({ children, ...props }: any) => (
+    blockquote: ({ children, ...props }: GenericProps) => (
       <blockquote className={styles.blockquote} {...props}>
         {children}
       </blockquote>
     ),
 
     // Custom link renderer
-    a: ({ children, href, ...props }: any) => {
+    a: ({ children, href, ...props }: LinkProps) => {
       const isExternal = href && (href.startsWith('http') || href.startsWith('mailto:'));
       const isHash = href && href.startsWith('#');
 
@@ -308,7 +341,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
     },
 
     // Custom image renderer
-    img: ({ src, alt, ...props }: any) => (
+    img: ({ src, alt, ...props }: ImageProps) => (
       <div className={styles.imageContainer}>
         <img
           className={styles.image}
@@ -322,31 +355,31 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
     ),
 
     // Custom horizontal rule renderer
-    hr: ({ ...props }: any) => (
+    hr: ({ ...props }: GenericProps) => (
       <hr className={styles.hr} role="separator" {...props} />
     ),
 
     // Custom list renderers
-    ul: ({ children, ...props }: any) => (
+    ul: ({ children, ...props }: GenericProps) => (
       <ul className={styles.unorderedList} {...props}>
         {children}
       </ul>
     ),
 
-    ol: ({ children, ...props }: any) => (
+    ol: ({ children, ...props }: GenericProps) => (
       <ol className={styles.orderedList} {...props}>
         {children}
       </ol>
     ),
 
-    li: ({ children, ...props }: any) => (
+    li: ({ children, ...props }: GenericProps) => (
       <li className={styles.listItem} {...props}>
         {children}
       </li>
     ),
 
     // Custom paragraph renderer
-    p: ({ children, ...props }: any) => (
+    p: ({ children, ...props }: GenericProps) => (
       <p className={styles.paragraph} {...props}>
         {children}
       </p>

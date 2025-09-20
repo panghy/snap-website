@@ -9,6 +9,7 @@ import type {
   SpecificationDocument,
   SpecificationMetadata,
   TableOfContents,
+  Heading,
 } from '../../types/specification';
 import styles from './SpecificationPage.module.css';
 
@@ -233,8 +234,8 @@ export const SpecificationPage: React.FC = () => {
       let activeHeading: string | null = null;
 
       // Flatten all headings (including nested ones)
-      const flattenHeadings = (headings: any[]): any[] => {
-        let flat: any[] = [];
+      const flattenHeadings = (headings: Heading[]): Heading[] => {
+        let flat: Heading[] = [];
         for (const heading of headings) {
           // Only track h2 headings since that's what we show in TOC
           if (heading.level === 2) {
