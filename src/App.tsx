@@ -36,7 +36,10 @@ function App() {
         </>
       ) : (
         <>
-          <HeroSection />
+          <HeroSection onExploreSNAPsClick={() => {
+            setShowCatalogue(true);
+            setCatalogueFilter(undefined);
+          }} />
           <SnapSection />
           <ProblemSection />
           <SolutionSection />
