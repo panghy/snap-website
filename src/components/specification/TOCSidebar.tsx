@@ -31,9 +31,9 @@ export const TOCSidebar: React.FC<TOCSidebarProps> = ({
   isVisible,
   onClose,
 }) => {
-  const renderHeadings = (headings: Heading[], documentId: string, maxLevel: number = 3, skipLevel1: boolean = true) => {
+  const renderHeadings = (headings: Heading[], documentId: string, maxLevel: number = 3, skipLevel1: boolean = true): React.ReactNode[] => {
     return headings
-      .map((heading) => {
+      .map((heading): React.ReactNode => {
         // Skip h1 headings but still process their children
         if (skipLevel1 && heading.level === 1) {
           if (heading.children.length > 0) {

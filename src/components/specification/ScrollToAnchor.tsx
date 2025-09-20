@@ -14,7 +14,7 @@ export const ScrollToAnchor: React.FC<ScrollToAnchorProps> = ({
 }) => {
   const previousHashRef = useRef<string>('');
   const isScrollingRef = useRef<boolean>(false);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Function to scroll to an element by ID
   const scrollToElement = (elementId: string, scrollBehavior: ScrollBehavior = behavior) => {
