@@ -4,6 +4,92 @@
   "lastUpdated": "2025-09-19T00:00:00Z",
   "snaps": [
     {
+      "id": "leader-election-java",
+      "name": "Leader Election",
+      "description": "Distributed leader election implementation for FoundationDB with automatic failover",
+      "category": "other",
+      "repository": "https://github.com/panghy/leaderelection",
+      "languages": ["Java"],
+      "capabilities": {
+        "otelMetrics": true,
+        "otelTracing": true,
+        "multiTenancy": true,
+        "asyncApi": true
+      },
+      "platforms": [
+        {
+          "type": "language",
+          "name": "Java",
+          "version": "11+"
+        },
+        {
+          "type": "foundationdb",
+          "name": "FoundationDB",
+          "version": "7.1+"
+        }
+      ],
+      "maintainers": ["@panghy"],
+      "tags": ["consensus", "distributed", "coordination"]
+    },
+    {
+      "id": "vector-search-java",
+      "name": "Vector Search",
+      "description": "High-performance vector similarity search engine built on FoundationDB",
+      "category": "search",
+      "repository": "https://github.com/panghy/vectorsearch",
+      "languages": ["Java"],
+      "capabilities": {
+        "otelMetrics": true,
+        "otelTracing": true,
+        "multiTenancy": true,
+        "batchOperations": true,
+        "asyncApi": true
+      },
+      "platforms": [
+        {
+          "type": "language",
+          "name": "Java",
+          "version": "11+"
+        },
+        {
+          "type": "foundationdb",
+          "name": "FoundationDB",
+          "version": "7.1+"
+        }
+      ],
+      "maintainers": ["@panghy"],
+      "tags": ["vector", "similarity", "embedding", "search"]
+    },
+    {
+      "id": "task-queue-java",
+      "name": "Task Queue",
+      "description": "Distributed task queue with priority support and exactly-once processing guarantees",
+      "category": "queue",
+      "repository": "https://github.com/panghy/taskqueue",
+      "languages": ["Java"],
+      "capabilities": {
+        "otelMetrics": true,
+        "otelTracing": true,
+        "multiTenancy": true,
+        "batchOperations": true,
+        "asyncApi": true
+      },
+      "platforms": [
+        {
+          "type": "language",
+          "name": "Java",
+          "version": "11+"
+        },
+        {
+          "type": "foundationdb",
+          "name": "FoundationDB",
+          "version": "7.1+"
+        }
+      ],
+      "maintainers": ["@panghy"],
+      "tags": ["queue", "tasks", "distributed", "priority"]
+    },
+    {
       "id": "fdb-queue-java",
       "name": "FDB Queue",
       "description": "High-performance distributed queue built on FoundationDB with exactly-once delivery guarantees",
