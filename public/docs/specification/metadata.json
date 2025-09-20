@@ -1,0 +1,53 @@
+{
+  "specVersion": "0.1.0",
+  "releaseDate": "2025-09-19",
+  "status": "draft",
+  "authors": [
+    "@panghy"
+  ],
+  "license": "MIT",
+  "changelog": [
+    {
+      "version": "0.1.0",
+      "date": "2025-09-19",
+      "changes": [
+        "Initial SNAP specification draft",
+        "Core principles and requirements defined",
+        "Transaction composability patterns documented",
+        "Directory-based namespace isolation specified",
+        "Language-agnostic interoperability guidelines",
+        "Multi-tenancy requirements established"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "00-overview",
+      "title": "Overview",
+      "description": "Introduction to SNAPs and core principles",
+      "order": 0,
+      "documents": ["01-introduction.md", "02-principles.md"]
+    },
+    {
+      "id": "01-core-concepts",
+      "title": "Core Concepts",
+      "description": "Fundamental concepts and patterns",
+      "order": 1,
+      "documents": ["01-transactions.md", "02-directories.md", "03-large-transactions.md"]
+    },
+    {
+      "id": "02-requirements",
+      "title": "Requirements",
+      "description": "Compliance criteria and specifications",
+      "order": 2,
+      "documents": ["01-compliance.md"]
+    },
+    {
+      "id": "03-examples",
+      "title": "Examples",
+      "description": "Reference implementations and patterns",
+      "order": 3,
+      "documents": ["01-task-queue.md"]
+    }
+  ]
+}

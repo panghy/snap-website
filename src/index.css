@@ -24,6 +24,7 @@ html {
   /* Fix for mobile Safari viewport jumping */
   height: -webkit-fill-available;
   background-color: #0a0a0a;
+  transition: background-color 0.2s ease;
 }
 
 body {
@@ -36,6 +37,7 @@ body {
   background-color: #0a0a0a;
   /* Prevent background from shifting */
   background-attachment: fixed;
+  transition: background-color 0.2s ease;
 }
 
 a {

@@ -1,0 +1,345 @@
+.specificationPage {
+  min-height: 100vh;
+  background: #ffffff;
+  color: #1a1a1a;
+  padding-top: 105px; /* Account for fixed header and status bar with padding */
+  position: relative;
+  z-index: 1;
+}
+
+.specificationContent {
+  display: flex;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  padding-bottom: 320px; /* Add padding for footer to appear below TOC */
+  min-height: calc(100vh - 100px);
+  position: relative;
+}
+
+.mainContent {
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+  margin-left: 300px; /* Space for fixed TOC */
+  transition: all 0.3s ease-in-out;
+}
+
+/* When TOC is hidden */
+.mainContent.fullWidth {
+  margin-left: 0;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: #f8f9fa;
+  color: #4a5568;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #e2e8f0;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingContainer p {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  text-align: center;
+  background: #f8f9fa;
+  color: #e53e3e;
+}
+
+.errorContainer h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  color: #c53030;
+}
+
+.errorContainer p {
+  font-size: 1rem;
+  margin: 0 0 2rem 0;
+  color: #718096;
+  max-width: 500px;
+  line-height: 1.6;
+}
+
+.retryButton {
+  padding: 0.75rem 1.5rem;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.retryButton:hover {
+  background: #5a67d8;
+  transform: translateY(-1px);
+}
+
+.retryButton:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.retryButton:active {
+  transform: translateY(0);
+}
+
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  background: white;
+  border-radius: 8px;
+  border: 2px dashed #e2e8f0;
+  margin: 2rem;
+}
+
+.placeholder p {
+  color: #718096;
+  font-size: 1.1rem;
+  text-align: center;
+  margin: 0;
+}
+
+/* TOC Overlay for mobile */
+.tocOverlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1099;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .tocOverlay {
+    display: block;
+  }
+  .specificationPage {
+    padding-top: 120px; /* Account for mobile headers */
+  }
+
+  .specificationContent {
+    flex-direction: column;
+    padding: 0;
+    padding-bottom: 100px; /* Space for floating TOC button */
+  }
+
+  .mainContent {
+    margin-left: 0;
+    padding: 0;
+    width: 100%;
+  }
+
+  .mainContent.fullWidth {
+    margin-left: 0;
+  }
+
+  .loadingContainer,
+  .errorContainer {
+    padding: 1rem;
+  }
+
+  .errorContainer h2 {
+    font-size: 1.25rem;
+  }
+
+  .placeholder {
+    margin: 1rem;
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .specificationPage {
+    padding-top: 140px;
+  }
+
+  .mainContent {
+    padding: 0.75rem;
+  }
+
+  .retryButton {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.9rem;
+  }
+
+  .placeholder {
+    margin: 0.75rem;
+    min-height: 250px;
+  }
+
+  .placeholder p {
+    font-size: 1rem;
+    padding: 0 1rem;
+  }
+}
+
+/* Tablet styles */
+@media (max-width: 1024px) {
+  .mainContent {
+    margin-left: 280px; /* Narrower sidebar on tablet */
+  }
+
+  .specificationContent:has(.tocSidebar.hidden) .mainContent {
+    margin-left: 0;
+  }
+}
+
+/* Large screens */
+@media (min-width: 1400px) {
+  .mainContent {
+    margin-left: 360px; /* Wider sidebar on large screens */
+    padding: 2.5rem;
+  }
+
+  .placeholder {
+    margin: 2.5rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  .specificationPage {
+    background: white;
+    padding-top: 0;
+  }
+
+  .specificationContent {
+    max-width: none;
+    margin: 0;
+  }
+
+  .mainContent {
+    margin-left: 0;
+    padding: 0;
+  }
+
+  .loadingContainer,
+  .errorContainer,
+  .placeholder {
+    display: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .specificationPage {
+    background: white;
+    color: #000;
+  }
+
+  .loadingContainer,
+  .errorContainer {
+    background: white;
+    color: #000;
+  }
+
+  .spinner {
+    border-color: #000;
+    border-top-color: #666;
+  }
+
+  .placeholder {
+    border-color: #000;
+    background: white;
+  }
+
+  .retryButton {
+    background: #000;
+    color: white;
+    border: 2px solid #000;
+  }
+
+  .retryButton:hover {
+    background: #333;
+  }
+
+  .retryButton:focus {
+    box-shadow: 0 0 0 3px #666;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .mainContent {
+    transition: none;
+  }
+
+  .spinner {
+    animation: none;
+    border: 4px solid #667eea;
+  }
+
+  .retryButton:hover {
+    transform: none;
+  }
+
+  .retryButton:active {
+    transform: none;
+  }
+}
+
+/* Focus management for accessibility */
+.specificationPage:focus-within {
+  scroll-behavior: smooth;
+}
+
+/* Skip links for accessibility */
+.specificationPage::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: #000;
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.specificationPage:focus-within::before {
+  top: 6px;
+  opacity: 1;
+  pointer-events: auto;
+}

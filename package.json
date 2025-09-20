@@ -12,8 +12,13 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@types/react-syntax-highlighter": "^15.5.13",
+    "gray-matter": "^4.0.3",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "react-markdown": "^10.1.0",
+    "react-syntax-highlighter": "^15.6.6",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",

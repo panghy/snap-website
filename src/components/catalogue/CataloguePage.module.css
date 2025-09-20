@@ -2,7 +2,7 @@
   min-height: 100vh;
   background: #f8f9fa;
   color: #1a1a1a;
-  padding-top: 80px; /* Add space for fixed header */
+  padding-top: 60px; /* Add space for fixed header - no gap */
 }
 
 .catalogueContent {
