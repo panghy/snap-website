@@ -3,7 +3,8 @@ import { SpecificationService } from '../specification';
 import type { SpecificationDocument, TableOfContents, SpecificationMetadata } from '../../types/specification';
 
 // Mock fetch globally
-global.fetch = vi.fn();
+const mockFetch = vi.fn();
+global.fetch = mockFetch as typeof fetch;
 
 describe('SpecificationService', () => {
   let service: SpecificationService;
@@ -33,7 +34,7 @@ describe('SpecificationService', () => {
         ],
       };
 
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: true,
         json: async () => mockMetadata,
       });
@@ -43,11 +44,11 @@ describe('SpecificationService', () => {
       expect(result).toBeDefined();
       expect(result.metadata).toEqual(mockMetadata);
       expect(result.toc).toBeDefined();
-      expect(global.fetch).toHaveBeenCalledWith('/docs/specification/metadata.json');
+      expect(mockFetch).toHaveBeenCalledWith('/docs/specification/metadata.json');
     });
 
     it('should handle fetch errors gracefully', async () => {
-      (global.fetch as any).mockRejectedValueOnce(new Error('Network error'));
+      mockFetch.mockRejectedValueOnce(new Error('Network error'));
 
       await expect(service.loadSpecification()).rejects.toThrow('Network error');
     });
@@ -66,7 +67,7 @@ status: draft
 
 This is test content.`;
 
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: true,
         text: async () => mockMarkdown,
       });
@@ -86,7 +87,7 @@ This is test content.`;
 
 This is test content without frontmatter.`;
 
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: true,
         text: async () => mockMarkdown,
       });
@@ -107,7 +108,7 @@ status: draft
 
 Content`;
 
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: true,
         text: async () => mockMarkdown,
       });
@@ -178,7 +179,7 @@ Content here
         ],
       };
 
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: true,
         json: async () => mockMetadata,
       });
@@ -205,7 +206,7 @@ Content here
         ],
       };
 
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: true,
         json: async () => mockMetadata,
       });
