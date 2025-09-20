@@ -33,7 +33,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate, isLightTheme }) => {
                   Browse SNAPs
                 </a>
               </li>
-              <li><a href="#contribute">Contribute</a></li>
+              <li><a href="https://github.com/panghy/snap-website" target="_blank" rel="noopener noreferrer">Contribute</a></li>
               <li><a href="https://www.foundationdb.org" target="_blank" rel="noopener noreferrer">FoundationDB</a></li>
             </ul>
           </div>
@@ -45,56 +45,58 @@ const Footer: React.FC<FooterProps> = ({ onNavigate, isLightTheme }) => {
               <li><a href="https://discord.gg/acfgTbdErv" target="_blank" rel="noopener noreferrer">Discord</a></li>
             </ul>
           </div>
-          
-          <div className="footer-section">
-            <h4>Languages</h4>
-            <ul className="footer-links">
-              <li>
-                <a
-                  href="#java"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onNavigate?.('catalogue', { language: 'Java' });
-                  }}
-                >
-                  Java
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#python"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onNavigate?.('catalogue', { language: 'Python' });
-                  }}
-                >
-                  Python
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#go"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onNavigate?.('catalogue', { language: 'Go' });
-                  }}
-                >
-                  Go
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#rust"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onNavigate?.('catalogue', { language: 'Rust' });
-                  }}
-                >
-                  Rust
-                </a>
-              </li>
-            </ul>
-          </div>
+
+          {!isLightTheme && (
+            <div className="footer-section">
+              <h4>Languages</h4>
+              <ul className="footer-links">
+                <li>
+                  <a
+                    href="#java"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onNavigate?.('catalogue', { language: 'Java' });
+                    }}
+                  >
+                    Java
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#python"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onNavigate?.('catalogue', { language: 'Python' });
+                    }}
+                  >
+                    Python
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#go"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onNavigate?.('catalogue', { language: 'Go' });
+                    }}
+                  >
+                    Go
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#rust"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onNavigate?.('catalogue', { language: 'Rust' });
+                    }}
+                  >
+                    Rust
+                  </a>
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
         
         <div className="footer-bottom">

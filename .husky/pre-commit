@@ -1,0 +1,11 @@
+#\!/bin/sh
+
+# Check if snaps.json has been modified
+if git diff --cached --name-only | grep -q "src/data/snaps.json"; then
+  echo "📋 Validating snaps.json against schema..."
+  npm run validate:snaps
+  if [ $? -ne 0 ]; then
+    echo "❌ Commit aborted: snaps.json validation failed"
+    exit 1
+  fi
+fi

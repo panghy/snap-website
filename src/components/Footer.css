@@ -42,6 +42,10 @@
   margin-bottom: 3rem;
 }
 
+.footer-light .footer-content {
+  grid-template-columns: 2fr 1fr 1fr;
+}
+
 .footer-section h3 {
   font-size: 1.8rem;
   font-weight: 800;

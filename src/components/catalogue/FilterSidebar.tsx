@@ -149,32 +149,6 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
             </div>
           </div>
 
-          <div className={styles.filterSection}>
-            <h3>Languages</h3>
-            <div className={styles.filterOptions}>
-              {availableLanguages.map(language => {
-                const count = languageCounts.get(language) || 0;
-                const isDisabled = count === 0;
-                return (
-                  <label
-                    key={language}
-                    className={`${styles.filterOption} ${isDisabled ? styles.disabled : ''}`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={filters.selectedLanguages.includes(language)}
-                      onChange={() => !isDisabled && handleLanguageToggle(language)}
-                      disabled={isDisabled}
-                    />
-                    <span>
-                      {language}
-                      <span className={styles.count}>({count})</span>
-                    </span>
-                  </label>
-                );
-              })}
-            </div>
-          </div>
 
           <div className={styles.filterSection}>
             <h3>Capabilities</h3>
@@ -195,6 +169,33 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
                     />
                     <span>
                       {getCapabilityLabel(key)}
+                      <span className={styles.count}>({count})</span>
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className={styles.filterSection}>
+            <h3>Languages</h3>
+            <div className={styles.filterOptions}>
+              {availableLanguages.map(language => {
+                const count = languageCounts.get(language) || 0;
+                const isDisabled = count === 0;
+                return (
+                  <label
+                    key={language}
+                    className={`${styles.filterOption} ${isDisabled ? styles.disabled : ''}`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={filters.selectedLanguages.includes(language)}
+                      onChange={() => !isDisabled && handleLanguageToggle(language)}
+                      disabled={isDisabled}
+                    />
+                    <span>
+                      {language}
                       <span className={styles.count}>({count})</span>
                     </span>
                   </label>

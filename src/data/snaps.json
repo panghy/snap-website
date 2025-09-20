@@ -29,7 +29,6 @@
         }
       ],
       "maintainers": ["@panghy"],
-      "tags": ["consensus", "distributed", "coordination", "versionstamp", "heartbeat"],
       "beta": true
     },
     {
@@ -59,7 +58,6 @@
         }
       ],
       "maintainers": ["@panghy"],
-      "tags": ["vector", "similarity", "embedding", "search", "diskann", "pq"],
       "beta": true
     },
     {
@@ -88,8 +86,7 @@
           "version": "7.3+"
         }
       ],
-      "maintainers": ["@panghy"],
-      "tags": ["queue", "tasks", "distributed", "fifo", "at-most-once", "versioning"]
+      "maintainers": ["@panghy"]
     }
   ],
   "specifications": []
