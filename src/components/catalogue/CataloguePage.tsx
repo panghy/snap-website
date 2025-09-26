@@ -132,13 +132,8 @@ export const CataloguePage: React.FC<CataloguePageProps> = ({ initialFilter }) =
 
     // Count languages
     snapsForLanguages.forEach(snap => {
-      // Support both new language field and legacy languages array
-      if ('language' in snap && snap.language) {
+      if (snap.language) {
         languageCounts.set(snap.language, (languageCounts.get(snap.language) || 0) + 1);
-      } else if ('languages' in snap && snap.languages) {
-        snap.languages.forEach(lang => {
-          languageCounts.set(lang, (languageCounts.get(lang) || 0) + 1);
-        });
       }
     });
 
@@ -160,15 +155,8 @@ export const CataloguePage: React.FC<CataloguePageProps> = ({ initialFilter }) =
   const availableFilters = useMemo(() => {
     const categories = [...new Set(enrichedSnaps.map(s => s.category))] as SnapCategory[];
     const languages = [...new Set(enrichedSnaps
-      .flatMap(s => {
-        // Support both new language field and legacy languages array
-        if ('language' in s && s.language) {
-          return [s.language];
-        } else if ('languages' in s && s.languages) {
-          return s.languages;
-        }
-        return [];
-      })
+      .filter(s => s.language)
+      .map(s => s.language!)
     )].sort();
     const capabilities = [...new Set(
       enrichedSnaps.flatMap(s =>
