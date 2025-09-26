@@ -49,18 +49,6 @@ export const SnapCard: React.FC<SnapCardProps> = ({
     return snap.repository;
   }, [snap.repository]);
 
-  // Get primary language for display (backwards compatibility)
-  const primaryLanguage = React.useMemo(() => {
-    // Support both new language field and legacy languages array
-    if ('language' in snap && snap.language) {
-      return snap.language;
-    }
-    if ('languages' in snap && snap.languages && snap.languages.length > 0) {
-      return snap.languages[0];
-    }
-    return null;
-  }, [snap]);
-
   // Don't fetch metadata individually - it's already provided from parent
   // The parent (CataloguePage) fetches all metadata and passes enriched snaps
   const effectiveStars = snap.stars;
@@ -182,13 +170,13 @@ export const SnapCard: React.FC<SnapCardProps> = ({
 
       <div className={styles.snapMeta}>
         <div className={styles.languages}>
-          {primaryLanguage && (
+          {snap.language && (
             <span
               className={styles.languageTag}
-              onClick={() => onLanguageClick?.(primaryLanguage)}
+              onClick={() => onLanguageClick?.(snap.language!)}
               style={{ cursor: onLanguageClick ? 'pointer' : 'default' }}
             >
-              {primaryLanguage}
+              {snap.language}
             </span>
           )}
         </div>

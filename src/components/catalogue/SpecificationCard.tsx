@@ -13,15 +13,8 @@ export const SpecificationCard: React.FC<SpecificationCardProps> = ({
   // Get unique languages from implementations
   const availableLanguages = [...new Set(
     implementations
-      .flatMap(impl => {
-        // Support both new language field and legacy languages array
-        if ('language' in impl && impl.language) {
-          return [impl.language];
-        } else if ('languages' in impl && impl.languages) {
-          return impl.languages;
-        }
-        return [];
-      })
+      .filter(impl => impl.language)
+      .map(impl => impl.language!)
   )].sort();
   return (
     <div className={styles.specificationCard}>
@@ -68,23 +61,11 @@ export const SpecificationCard: React.FC<SpecificationCardProps> = ({
                   className={styles.implLink}
                 >
                   <span className={styles.implName}>{impl.name}</span>
-                  {(() => {
-                    // Support both new language field and legacy languages array
-                    if ('language' in impl && impl.language) {
-                      return (
-                        <span className={styles.implLanguages}>
-                          {impl.language}
-                        </span>
-                      );
-                    } else if ('languages' in impl && impl.languages && impl.languages.length > 0) {
-                      return (
-                        <span className={styles.implLanguages}>
-                          {impl.languages.join(', ')}
-                        </span>
-                      );
-                    }
-                    return null;
-                  })()}
+                  {impl.language && (
+                    <span className={styles.implLanguages}>
+                      {impl.language}
+                    </span>
+                  )}
                 </a>
                 {impl.stars !== undefined && (
                   <span className={styles.implStars}>⭐ {impl.stars}</span>
