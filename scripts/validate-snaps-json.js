@@ -12,7 +12,7 @@ const ajv = new Ajv({ allErrors: true, strict: false });
 
 // Read the schema
 const schemaPath = path.join(__dirname, '../specs/001-build-a-catalogue/contracts/snaps-schema.json');
-const dataPath = path.join(__dirname, '../src/data/snaps.json');
+const dataPath = path.join(__dirname, '../public/data/snaps.json');
 
 const schema = JSON.parse(fs.readFileSync(schemaPath, 'utf8'));
 const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));

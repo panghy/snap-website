@@ -41,7 +41,7 @@ export const CatalogueHeader: React.FC<CatalogueHeaderProps> = ({
           </div>
           <div className={styles.headerActions}>
             <a
-              href="https://github.com/panghy/snap-website/edit/main/src/data/snaps.json"
+              href="https://github.com/panghy/snap-website/edit/main/public/data/snaps.json"
               target="_blank"
               rel="noopener noreferrer"
               className={styles.githubLink}

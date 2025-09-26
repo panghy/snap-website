@@ -49,6 +49,7 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
       cache: 'Cache',
       pubsub: 'Pub/Sub',
       workflow: 'Workflow Engine',
+      persistence: 'Persistence',
       other: 'Other'
     };
     return displayNames[category] || category;

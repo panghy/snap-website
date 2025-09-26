@@ -117,7 +117,9 @@ export function groupAndSort(
   const grouped = new Map<string, SnapEntry[]>();
 
   snaps.forEach(snap => {
-    const keys = groupBy === 'category' ? [snap.category] : snap.languages;
+    const keys = groupBy === 'category'
+      ? [snap.category]
+      : (snap.language ? [snap.language] : []);
 
     keys.forEach(key => {
       if (!grouped.has(key)) {

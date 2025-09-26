@@ -15,7 +15,15 @@ export function filterSnaps(
         snap.name.toLowerCase().includes(query) ||
         snap.description.toLowerCase().includes(query) ||
         snap.tags?.some(tag => tag.toLowerCase().includes(query)) ||
-        snap.languages.some(lang => lang.toLowerCase().includes(query));
+        (() => {
+          // Support both new language field and legacy languages array
+          if ('language' in snap && snap.language) {
+            return snap.language.toLowerCase().includes(query);
+          } else if ('languages' in snap && snap.languages) {
+            return snap.languages.some(lang => lang.toLowerCase().includes(query));
+          }
+          return false;
+        })();
 
       if (!matchesSearch) return false;
     }
@@ -29,10 +37,23 @@ export function filterSnaps(
 
     // Language filter
     if (filters.selectedLanguages.length > 0) {
-      const hasLanguage = filters.selectedLanguages.some(lang =>
-        snap.languages.includes(lang)
+      const snapLanguages: string[] = (() => {
+        // Support both new language field and legacy languages array
+        if ('language' in snap && snap.language) {
+          return [snap.language];
+        } else if ('languages' in snap && snap.languages) {
+          return snap.languages;
+        }
+        return [];
+      })();
+
+      const hasMatchingLanguage = snapLanguages.some(lang =>
+        filters.selectedLanguages.includes(lang)
       );
-      if (!hasLanguage) return false;
+
+      if (!hasMatchingLanguage) {
+        return false;
+      }
     }
 
     // Capabilities filter
@@ -80,7 +101,12 @@ export function filterSpecifications(
 export function getUniqueLanguages(snaps: SnapEntry[]): string[] {
   const languages = new Set<string>();
   snaps.forEach(snap => {
-    snap.languages.forEach(lang => languages.add(lang));
+    // Support both new language field and legacy languages array
+    if ('language' in snap && snap.language) {
+      languages.add(snap.language);
+    } else if ('languages' in snap && snap.languages) {
+      snap.languages.forEach(lang => languages.add(lang));
+    }
   });
   return Array.from(languages).sort();
 }
