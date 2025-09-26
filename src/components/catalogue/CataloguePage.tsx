@@ -70,7 +70,7 @@ export const CataloguePage: React.FC<CataloguePageProps> = ({ initialFilter }) =
     if (!data?.snaps) return [];
 
     return data.snaps.map(snap => {
-      const snapId = snap.id || snap.name;
+      const snapId = snap.id;
       const metadata = repositoryMetadata.get(snapId);
 
       if (metadata) {
@@ -260,7 +260,7 @@ export const CataloguePage: React.FC<CataloguePageProps> = ({ initialFilter }) =
                 {filters.viewMode === 'snaps' ? (
                   filteredSnaps.map(snap => (
                   <SnapCard
-                    key={snap.id || snap.name}
+                    key={snap.id}
                     snap={snap}
                     onLanguageClick={(language) => {
                       setFilters(prev => ({

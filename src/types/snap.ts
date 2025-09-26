@@ -45,7 +45,7 @@ export interface PlatformRequirement {
 import type { Repository } from './repository';
 
 export interface SnapEntry {
-  id?: string;
+  id: string;
   name: string;
   description: string;
   category: SnapCategory;
