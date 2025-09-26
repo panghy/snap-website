@@ -14,8 +14,7 @@ import type {
 import { SnapCategory } from '../../types/snap';
 import { filterSnaps, filterSpecifications } from '../../utils/filters';
 import { sortSnaps, sortSpecifications } from '../../utils/sort';
-import { GitHubService } from '../../services/github';
-import catalogueData from '../../data/snaps.json';
+import { useAllRepositoryMetadata } from '../../hooks/useAllRepositoryMetadata';
 import styles from './CataloguePage.module.css';
 
 interface CataloguePageProps {
@@ -23,7 +22,9 @@ interface CataloguePageProps {
 }
 
 export const CataloguePage: React.FC<CataloguePageProps> = ({ initialFilter }) => {
-  const [data] = useState<CatalogueData>(catalogueData as CatalogueData);
+  const [data, setData] = useState<CatalogueData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [filters, setFilters] = useState<FilterState>({
     searchQuery: '',
     selectedCategories: [],
@@ -37,39 +38,54 @@ export const CataloguePage: React.FC<CataloguePageProps> = ({ initialFilter }) =
     field: 'stars',
     direction: 'desc',
   });
-  const [githubMetrics, setGithubMetrics] = useState<Map<string, any>>(new Map());
-  const [isLoadingMetrics, setIsLoadingMetrics] = useState(true);
 
-  // Fetch GitHub metrics on mount
+  // Load catalogue data from public directory
   useEffect(() => {
-    const fetchMetrics = async () => {
-      setIsLoadingMetrics(true);
-      const urls = data.snaps.map(snap => snap.repository);
-      const metrics = await GitHubService.fetchBatchMetrics(urls);
-      setGithubMetrics(metrics);
-      setIsLoadingMetrics(false);
+    const loadCatalogueData = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch('/data/snaps.json');
+        if (!response.ok) {
+          throw new Error(`Failed to load catalogue data: ${response.status}`);
+        }
+        const catalogueData = await response.json();
+        setData(catalogueData);
+        setLoadError(null);
+      } catch (error) {
+        console.error('Failed to load catalogue data:', error);
+        setLoadError(error instanceof Error ? error.message : 'Failed to load catalogue data');
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    fetchMetrics();
-  }, [data.snaps]);
+    loadCatalogueData();
+  }, []);
 
-  // Enrich SNAPs with GitHub metrics
+  // Fetch all repository metadata
+  const { metadata: repositoryMetadata, loading: isLoadingMetrics } = useAllRepositoryMetadata(data?.snaps || []);
+
+  // Enrich SNAPs with fetched repository metadata
   const enrichedSnaps = useMemo(() => {
+    if (!data?.snaps) return [];
+
     return data.snaps.map(snap => {
-      const metrics = githubMetrics.get(snap.repository);
-      if (metrics) {
+      const snapId = snap.id || snap.name;
+      const metadata = repositoryMetadata.get(snapId);
+
+      if (metadata) {
         return {
           ...snap,
-          stars: metrics.stars,
-          lastCommit: metrics.lastCommit,
-          lastRelease: metrics.lastRelease,
-          openIssues: metrics.openIssues,
-          license: metrics.license,
+          stars: metadata.stars ?? snap.stars,
+          lastCommit: metadata.lastUpdated ?? snap.lastCommit,
+          lastRelease: metadata.lastRelease ?? snap.lastRelease,
+          license: metadata.license ?? snap.license,
+          openIssues: metadata.openIssues ?? snap.openIssues,
         };
       }
       return snap;
     });
-  }, [data.snaps, githubMetrics]);
+  }, [data, repositoryMetadata]);
 
   // Filter and sort SNAPs
   const filteredSnaps = useMemo(() => {
@@ -79,9 +95,10 @@ export const CataloguePage: React.FC<CataloguePageProps> = ({ initialFilter }) =
 
   // Filter specifications
   const filteredSpecs = useMemo(() => {
+    if (!data?.specifications) return [];
     const filtered = filterSpecifications(data.specifications, filters.searchQuery);
     return sortSpecifications(filtered, sortState.direction);
-  }, [data.specifications, filters.searchQuery, sortState.direction]);
+  }, [data, filters.searchQuery, sortState.direction]);
 
   // Get items to display based on view mode
   const displayItems = filters.viewMode === 'snaps' ? filteredSnaps : filteredSpecs;
@@ -115,9 +132,14 @@ export const CataloguePage: React.FC<CataloguePageProps> = ({ initialFilter }) =
 
     // Count languages
     snapsForLanguages.forEach(snap => {
-      snap.languages.forEach(lang => {
-        languageCounts.set(lang, (languageCounts.get(lang) || 0) + 1);
-      });
+      // Support both new language field and legacy languages array
+      if ('language' in snap && snap.language) {
+        languageCounts.set(snap.language, (languageCounts.get(snap.language) || 0) + 1);
+      } else if ('languages' in snap && snap.languages) {
+        snap.languages.forEach(lang => {
+          languageCounts.set(lang, (languageCounts.get(lang) || 0) + 1);
+        });
+      }
     });
 
     // Count capabilities
@@ -137,7 +159,17 @@ export const CataloguePage: React.FC<CataloguePageProps> = ({ initialFilter }) =
   // Get available options (only those that exist in the data)
   const availableFilters = useMemo(() => {
     const categories = [...new Set(enrichedSnaps.map(s => s.category))] as SnapCategory[];
-    const languages = [...new Set(enrichedSnaps.flatMap(s => s.languages))].sort();
+    const languages = [...new Set(enrichedSnaps
+      .flatMap(s => {
+        // Support both new language field and legacy languages array
+        if ('language' in s && s.language) {
+          return [s.language];
+        } else if ('languages' in s && s.languages) {
+          return s.languages;
+        }
+        return [];
+      })
+    )].sort();
     const capabilities = [...new Set(
       enrichedSnaps.flatMap(s =>
         s.capabilities
@@ -153,20 +185,34 @@ export const CataloguePage: React.FC<CataloguePageProps> = ({ initialFilter }) =
     setFilters(prev => ({ ...prev, ...newFilters }));
   };
 
-  const handleSortChange = (field: SortState['field']) => {
-    setSortState(prev => ({
-      field,
-      direction:
-        prev.field === field && prev.direction === 'asc' ? 'desc' : 'asc',
-    }));
-  };
-
   const handleViewModeToggle = () => {
     setFilters(prev => ({
       ...prev,
       viewMode: prev.viewMode === 'snaps' ? 'specifications' : 'snaps',
     }));
   };
+
+  // Handle loading state
+  if (isLoading) {
+    return (
+      <div className={styles.cataloguePage}>
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  // Handle error state
+  if (loadError || !data) {
+    return (
+      <div className={styles.cataloguePage}>
+        <div className={styles.errorMessage}>
+          <h2>Failed to Load Catalogue</h2>
+          <p>{loadError || 'Unable to load catalogue data'}</p>
+          <button onClick={() => window.location.reload()}>Retry</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <ErrorBoundary>
@@ -199,8 +245,8 @@ export const CataloguePage: React.FC<CataloguePageProps> = ({ initialFilter }) =
                 <select
                   value={`${sortState.field}-${sortState.direction}`}
                   onChange={e => {
-                    const [field] = e.target.value.split('-') as [SortState['field']];
-                    handleSortChange(field);
+                    const [field, direction] = e.target.value.split('-') as [SortState['field'], SortState['direction']];
+                    setSortState({ field, direction });
                   }}
                 >
                   <option value="name-asc">Name (A-Z)</option>
@@ -216,23 +262,18 @@ export const CataloguePage: React.FC<CataloguePageProps> = ({ initialFilter }) =
               </div>
             </div>
 
-            {isLoadingMetrics && filters.viewMode === 'snaps' && (
+            {isLoadingMetrics && filters.viewMode === 'snaps' ? (
               <div className={styles.metricsLoading}>
                 <LoadingSpinner />
-                <span>Loading GitHub metrics...</span>
+                <span>Loading repository metrics...</span>
               </div>
-            )}
-
-            <div className={styles.catalogueGrid}>
-              {filters.viewMode === 'snaps' ? (
-                filteredSnaps.map(snap => (
+            ) : (
+              <div className={styles.catalogueGrid}>
+                {filters.viewMode === 'snaps' ? (
+                  filteredSnaps.map(snap => (
                   <SnapCard
-                    key={snap.id}
+                    key={snap.id || snap.name}
                     snap={snap}
-                    specification={data.specifications.find(
-                      spec => spec.id === snap.specificationId
-                    )}
-                    isLoadingMetrics={isLoadingMetrics}
                     onLanguageClick={(language) => {
                       setFilters(prev => ({
                         ...prev,
@@ -257,14 +298,15 @@ export const CataloguePage: React.FC<CataloguePageProps> = ({ initialFilter }) =
                     key={spec.id}
                     specification={spec}
                     implementations={enrichedSnaps.filter(snap =>
-                      spec.implementations?.includes(snap.id)
+                      snap.id && spec.implementations?.includes(snap.id)
                     )}
                   />
                 ))
               )}
-            </div>
+              </div>
+            )}
 
-            {displayItems.length === 0 && (
+            {!isLoadingMetrics && displayItems.length === 0 && (
               <div className={styles.noResults}>
                 <p>No {filters.viewMode === 'snaps' ? 'SNAPs' : 'specifications'} found.</p>
                 <p>Try adjusting your filters or search query.</p>

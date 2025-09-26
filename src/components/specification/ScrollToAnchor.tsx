@@ -20,6 +20,9 @@ export const ScrollToAnchor: React.FC<ScrollToAnchorProps> = ({
   const scrollToElement = (elementId: string, scrollBehavior: ScrollBehavior = behavior) => {
     if (!elementId || isScrollingRef.current) return;
 
+    // Guard against SSR/test environments
+    if (typeof document === 'undefined') return;
+
     const element = document.getElementById(elementId);
     if (!element) {
       console.warn(`ScrollToAnchor: Element with ID "${elementId}" not found`);
@@ -113,6 +116,9 @@ export const ScrollToAnchor: React.FC<ScrollToAnchorProps> = ({
 
   // Set up event listeners
   useEffect(() => {
+    // Guard against SSR/test environments
+    if (typeof window === 'undefined' || typeof document === 'undefined') return;
+
     // Handle initial hash on component mount
     const initialHash = window.location.hash.slice(1);
     if (initialHash) {
@@ -142,6 +148,9 @@ export const ScrollToAnchor: React.FC<ScrollToAnchorProps> = ({
 
   // Update offset when it changes
   useEffect(() => {
+    // Guard against SSR/test environments
+    if (typeof window === 'undefined' || typeof document === 'undefined') return;
+
     // Re-scroll to current hash if offset changes significantly
     const currentHash = window.location.hash.slice(1);
     if (currentHash && !isScrollingRef.current) {

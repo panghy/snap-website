@@ -59,13 +59,13 @@
         "repository": {
           "type": "string",
           "format": "uri",
-          "pattern": "^https://github\\.com/[\\w-]+/[\\w.-]+$",
-          "description": "GitHub repository URL"
+          "pattern": "^https://(github\\.com/[\\w-]+/[\\w.-]+|gitlab\\.com/[\\w\\-.]+/[\\w.-]+)$",
+          "description": "GitHub or GitLab repository URL"
         },
         "specificationRepository": {
           "type": "string",
           "format": "uri",
-          "pattern": "^https://github\\.com/[\\w-]+/[\\w.-]+$",
+          "pattern": "^https://(github\\.com/[\\w-]+/[\\w.-]+|gitlab\\.com/[\\w\\-.]+/[\\w.-]+)$",
           "description": "Optional specification repository URL"
         },
         "specificationId": {
@@ -149,8 +149,8 @@
         "repository": {
           "type": "string",
           "format": "uri",
-          "pattern": "^https://github\\.com/[\\w-]+/[\\w.-]+$",
-          "description": "GitHub repository with specification documentation"
+          "pattern": "^https://(github\\.com/[\\w-]+/[\\w.-]+|gitlab\\.com/[\\w\\-.]+/[\\w.-]+)$",
+          "description": "GitHub or GitLab repository with specification documentation"
         },
         "version": {
           "type": "string",

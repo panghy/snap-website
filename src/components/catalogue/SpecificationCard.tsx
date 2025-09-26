@@ -10,6 +10,19 @@ export const SpecificationCard: React.FC<SpecificationCardProps> = ({
   specification,
   implementations,
 }) => {
+  // Get unique languages from implementations
+  const availableLanguages = [...new Set(
+    implementations
+      .flatMap(impl => {
+        // Support both new language field and legacy languages array
+        if ('language' in impl && impl.language) {
+          return [impl.language];
+        } else if ('languages' in impl && impl.languages) {
+          return impl.languages;
+        }
+        return [];
+      })
+  )].sort();
   return (
     <div className={styles.specificationCard}>
       <div className={styles.cardHeader}>
@@ -35,20 +48,43 @@ export const SpecificationCard: React.FC<SpecificationCardProps> = ({
 
       {implementations.length > 0 && (
         <div className={styles.implementations}>
-          <h4>Implementations ({implementations.length})</h4>
+          <div className={styles.implementationsHeader}>
+            <h4>Implementations ({implementations.length})</h4>
+            <div className={styles.languageBadges}>
+              {availableLanguages.map(lang => (
+                <span key={lang} className={styles.languageBadge}>
+                  {lang}
+                </span>
+              ))}
+            </div>
+          </div>
           <div className={styles.implementationsList}>
             {implementations.map(impl => (
               <div key={impl.id} className={styles.implementationItem}>
                 <a
-                  href={impl.repository}
+                  href={typeof impl.repository === 'string' ? impl.repository : impl.repository?.url || '#'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.implLink}
                 >
                   <span className={styles.implName}>{impl.name}</span>
-                  <span className={styles.implLanguages}>
-                    {impl.languages.join(', ')}
-                  </span>
+                  {(() => {
+                    // Support both new language field and legacy languages array
+                    if ('language' in impl && impl.language) {
+                      return (
+                        <span className={styles.implLanguages}>
+                          {impl.language}
+                        </span>
+                      );
+                    } else if ('languages' in impl && impl.languages && impl.languages.length > 0) {
+                      return (
+                        <span className={styles.implLanguages}>
+                          {impl.languages.join(', ')}
+                        </span>
+                      );
+                    }
+                    return null;
+                  })()}
                 </a>
                 {impl.stars !== undefined && (
                   <span className={styles.implStars}>⭐ {impl.stars}</span>

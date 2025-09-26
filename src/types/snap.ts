@@ -9,6 +9,7 @@ export const SnapCategory = {
   Cache: 'cache',
   PubSub: 'pubsub',
   Workflow: 'workflow',
+  Persistence: 'persistence',
   Other: 'other'
 } as const;
 
@@ -40,23 +41,27 @@ export interface PlatformRequirement {
   version: string;
 }
 
+// Import the new Repository type
+import type { Repository } from './repository';
+
 export interface SnapEntry {
-  id: string;
+  id?: string;
   name: string;
   description: string;
   category: SnapCategory;
-  repository: string;
+  language?: string; // Single language per SNAP
+  repository?: Repository | string; // Can be either format
   specificationRepository?: string;
   specificationId?: string;
-  languages: string[];
   capabilities?: SnapCapabilities;
   platforms?: PlatformRequirement[];
   specificationVersion?: string;
-  maintainers?: string[];
+  maintainer?: string;
   tags?: string[];
   archived?: boolean;
   beta?: boolean;
-  // Derived from GitHub API
+  addedDate?: string; // When added to catalogue
+  // Derived from GitHub/GitLab API
   stars?: number;
   lastCommit?: string;
   lastRelease?: string;
