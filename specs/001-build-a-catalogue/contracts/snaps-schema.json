@@ -34,7 +34,7 @@
   "definitions": {
     "snapEntry": {
       "type": "object",
-      "required": ["id", "name", "description", "category", "repository", "languages"],
+      "required": ["id", "name", "description", "category", "repository", "language"],
       "properties": {
         "id": {
           "type": "string",
@@ -73,14 +73,10 @@
           "pattern": "^[a-z0-9-]+$",
           "description": "Reference to specification being implemented"
         },
-        "languages": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "type": "string",
-            "enum": ["Java", "Python", "Go", "Rust", "C++", "C#", "JavaScript", "TypeScript", "Ruby", "Swift", "Kotlin", "Scala", "Elixir", "Other"]
-          },
-          "description": "Supported programming languages"
+        "language": {
+          "type": "string",
+          "enum": ["Java", "Python", "Go", "Rust", "C++", "C#", "JavaScript", "TypeScript", "Ruby", "Swift", "Kotlin", "Scala", "Elixir", "Other"],
+          "description": "Programming language of this SNAP implementation"
         },
         "capabilities": {
           "$ref": "#/definitions/snapCapabilities"
@@ -169,7 +165,7 @@
     },
     "snapCategory": {
       "type": "string",
-      "enum": ["queue", "blobstore", "search", "graph", "timeseries", "cache", "pubsub", "workflow", "other"],
+      "enum": ["queue", "blobstore", "search", "graph", "timeseries", "cache", "pubsub", "workflow", "persistence", "other"],
       "description": "Category of SNAP functionality"
     },
     "snapCapabilities": {
