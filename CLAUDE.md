@@ -1,8 +1,5 @@
 # Claude Code Context - SNAP Website
 
-## Current Feature: GitLab Repository Support
-Adding support for GitLab.com repositories in the SNAP catalogue alongside GitHub repos.
-
 ## Tech Stack
 - **Frontend**: React 19, TypeScript 5.x, Vite
 - **Styling**: CSS Modules

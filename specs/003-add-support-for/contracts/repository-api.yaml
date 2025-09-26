@@ -1,0 +1,197 @@
+openapi: 3.0.0
+info:
+  title: Repository Metadata Service
+  version: 1.0.0
+  description: Internal API contracts for fetching repository metadata from GitHub and GitLab
+
+paths:
+  /internal/repository/parse:
+    post:
+      summary: Parse repository URL
+      operationId: parseRepositoryURL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - url
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  example: "https://github.com/user/repo"
+      responses:
+        '200':
+          description: Successfully parsed repository URL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParsedRepository'
+        '400':
+          description: Invalid repository URL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /internal/repository/metadata:
+    post:
+      summary: Fetch repository metadata
+      operationId: fetchRepositoryMetadata
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Repository'
+      responses:
+        '200':
+          description: Successfully fetched metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepositoryMetadata'
+        '404':
+          description: Repository not found or private
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limited by platform API
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Platform API unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /internal/repository/validate:
+    post:
+      summary: Validate repository URL format
+      operationId: validateRepositoryURL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - url
+              properties:
+                url:
+                  type: string
+                  example: "https://gitlab.com/group/project"
+      responses:
+        '200':
+          description: Validation result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  valid:
+                    type: boolean
+                  platform:
+                    $ref: '#/components/schemas/RepositoryPlatform'
+                  errors:
+                    type: array
+                    items:
+                      type: string
+
+components:
+  schemas:
+    RepositoryPlatform:
+      type: string
+      enum:
+        - GITHUB
+        - GITLAB
+
+    ParsedRepository:
+      type: object
+      required:
+        - platform
+        - owner
+        - name
+      properties:
+        platform:
+          $ref: '#/components/schemas/RepositoryPlatform'
+        owner:
+          type: string
+          description: Repository owner or organization
+        name:
+          type: string
+          description: Repository name
+
+    Repository:
+      type: object
+      required:
+        - url
+        - platform
+        - owner
+        - name
+      properties:
+        url:
+          type: string
+          format: uri
+        platform:
+          $ref: '#/components/schemas/RepositoryPlatform'
+        owner:
+          type: string
+        name:
+          type: string
+        metadata:
+          $ref: '#/components/schemas/RepositoryMetadata'
+        fetchedAt:
+          type: string
+          format: date-time
+        fetchError:
+          type: string
+
+    RepositoryMetadata:
+      type: object
+      required:
+        - stars
+        - lastUpdated
+        - forks
+        - openIssues
+        - defaultBranch
+      properties:
+        stars:
+          type: integer
+          minimum: 0
+        description:
+          type: string
+          maxLength: 500
+        primaryLanguage:
+          type: string
+        lastUpdated:
+          type: string
+          format: date-time
+        forks:
+          type: integer
+          minimum: 0
+        openIssues:
+          type: integer
+          minimum: 0
+        defaultBranch:
+          type: string
+
+    Error:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
